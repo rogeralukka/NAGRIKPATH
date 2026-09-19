@@ -122,9 +122,9 @@ export default function LandingPage() {
   }, [currentSlide, slides.length]);
 
   return (
-    <div className="relative w-full h-[calc(100vh-64px)] min-h-[550px] bg-black text-white font-body-lg overflow-hidden select-none">
+    <div className="relative w-full h-full flex-1 min-h-0 bg-black text-white font-body-lg overflow-hidden select-none flex flex-col">
       {/* Outer Carousel Container */}
-      <div className="relative w-full h-full overflow-hidden">
+      <div className="relative w-full h-full flex-1 overflow-hidden">
         {/* Horizontal Flex Track with translate */}
         <div
           className="flex w-full h-full transition-transform duration-700 ease-in-out"

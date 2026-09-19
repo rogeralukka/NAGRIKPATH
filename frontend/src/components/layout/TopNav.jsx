@@ -76,7 +76,7 @@ export default function TopNav({ isPublic = false }) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b-2 border-slate-300 dark:border-white/[0.08] bg-white/95 dark:bg-[#0F1115]/95 backdrop-blur-md shadow-xs transition-colors duration-300 ease-in-out">
+    <header className="sticky top-0 z-50 w-full shrink-0 border-b-2 border-slate-300 dark:border-white/[0.08] bg-white/95 dark:bg-[#0F1115]/95 backdrop-blur-md shadow-xs transition-colors duration-300 ease-in-out">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         {/* Left Side: Clean Brand Text Logo (Fix 1 & Fix 6) */}
         <div className="flex items-center space-x-2">
