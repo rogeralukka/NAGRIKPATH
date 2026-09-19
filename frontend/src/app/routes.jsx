@@ -18,6 +18,7 @@ import UnifiedFamilyProfile from "../pages/UnifiedFamilyProfile";
 import YojnaSetuDashboard from "../pages/YojnaSetuDashboard";
 import DomainShellPage from "../pages/DomainShellPage";
 import DevHarnessPage from "../pages/DevHarnessPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 /**
  * RequireAuth Guard:
@@ -40,7 +41,7 @@ export function RequireAuth({ children }) {
  * Exact routes:
  *   /, /auth, /home, /jan-manch, /notifications, /profile,
  *   /yojna-setu, /shiksha-setu, /rozgar-setu, /kisan-setu, /nagar-setu,
- *   plus dev-only /dev/harness.
+ *   /404, plus dev-only /dev/harness, and wildcard catch-all.
  */
 export default function AppRoutes() {
   return (
@@ -53,6 +54,9 @@ export default function AppRoutes() {
 
       {/* Dev-Only Harness Route */}
       <Route path="/dev/harness" element={<DevHarnessPage />} />
+
+      {/* Explicit 404 Route */}
+      <Route path="/404" element={<NotFoundPage />} />
 
       {/* Protected Routes (RequireAuth) */}
       <Route element={<RequireAuth />}>
@@ -82,8 +86,8 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
-      {/* Fallback to root */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Wildcard Fallback Route */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
