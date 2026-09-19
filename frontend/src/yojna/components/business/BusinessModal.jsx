@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useData } from '../../context/DataContext';
 import { useLang } from '../../context/LangContext';
-import Icon from '../../../features/yojna-setu/components/Icon';
+import { Building2, X, AlertCircle } from 'lucide-react';
 
 export const BusinessModal = ({ isOpen, onClose, editingBusiness = null }) => {
   const { addBusiness, updateBusiness } = useData();
@@ -90,35 +90,35 @@ export const BusinessModal = ({ isOpen, onClose, editingBusiness = null }) => {
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-surface-container-lowest dark:bg-[#0F1115] rounded-3xl overflow-hidden shadow-2xl relative w-full max-w-2xl border border-outline-variant/30 dark:border-white/[0.08] flex flex-col max-h-[88vh] my-auto animate-fade-in-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
+      <div className="bg-white dark:bg-[#0F1115] rounded-3xl overflow-hidden shadow-2xl relative w-full max-w-2xl border border-neutral-200 dark:border-white/[0.08] flex flex-col max-h-[88vh] my-auto animate-fade-in-up">
         {/* Header */}
-        <div className="px-6 sm:px-8 py-5 bg-surface-container-low/70 dark:bg-[#16191F] border-b border-surface-container dark:border-white/[0.08] flex items-center justify-between sticky top-0 z-20 backdrop-blur-sm">
+        <div className="px-6 sm:px-8 py-5 bg-neutral-50/70 dark:bg-[#16191F] border-b border-neutral-200 dark:border-white/[0.08] flex items-center justify-between sticky top-0 z-20 backdrop-blur-xs">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary dark:text-primary-fixed flex items-center justify-center">
-              <Icon name="add_business" size={22} />
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-xs">
+              <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-headline-md text-lg font-bold text-on-surface dark:text-[#EDEDED]">
-                {editingBusiness ? t('editBusiness') : t('addNewBusiness')}
+              <h2 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-[#EDEDED]">
+                {editingBusiness ? t('editBusiness') || 'Edit Business Profile' : t('addNewBusiness') || 'Register New Business'}
               </h2>
-              <p className="font-body-sm text-xs text-on-surface-variant dark:text-[#8A8F98]">
-                {t('enterAccurateDetailsBiz')}
+              <p className="text-xs text-neutral-500 dark:text-[#8A8F98]">
+                {t('enterAccurateDetailsBiz') || 'Enter accurate MSME and tax identifiers for credit matching.'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant dark:text-[#8A8F98] hover:bg-surface-container dark:hover:bg-[#1D212A] transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-500 dark:text-[#8A8F98] hover:bg-neutral-100 dark:hover:bg-[#1D212A] hover:text-neutral-900 dark:hover:text-[#EDEDED] transition-colors cursor-pointer"
           >
-            <Icon name="close" size={20} />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Error */}
         {error && (
-          <div className="mx-8 mt-4 p-3 rounded-xl bg-error/10 border border-error/20 text-error text-xs font-medium flex items-center gap-2">
-            <Icon name="error" size={16} />
+          <div className="mx-6 sm:mx-8 mt-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-medium flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
@@ -127,172 +127,172 @@ export const BusinessModal = ({ isOpen, onClose, editingBusiness = null }) => {
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 overflow-y-auto space-y-6">
           {/* Basic Info */}
           <div>
-            <span className="font-label-bold text-xs uppercase tracking-wider text-primary dark:text-primary-fixed block mb-3">
-              {t('basicInformation')}
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block mb-3">
+              Basic Business Information
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2 flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('businessName')} <span className="text-error">*</span>
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Legal Business Name <span className="text-rose-500">*</span>
                 </label>
                 <input
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="e.g. EcoTech Solutions Pvt Ltd"
                   type="text"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('businessType')} <span className="text-error">*</span>
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Business Constitution Type <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={businessType}
                   onChange={(e) => setBusinessType(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                 >
-                  <option value="Proprietorship">Proprietorship</option>
-                  <option value="Partnership">Partnership</option>
-                  <option value="LLP">LLP</option>
                   <option value="Private Limited">Private Limited</option>
-                  <option value="Public Limited">Public Limited</option>
+                  <option value="Proprietorship">Proprietorship</option>
+                  <option value="Partnership Firm">Partnership Firm</option>
+                  <option value="LLP">Limited Liability Partnership (LLP)</option>
+                  <option value="One Person Company">One Person Company</option>
                 </select>
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('industrySector')} <span className="text-error">*</span>
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Industry Sector <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={industryCategory}
                   onChange={(e) => setIndustryCategory(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                 >
-                  <option value="Manufacturing">Manufacturing</option>
                   <option value="IT & Services">IT & Services</option>
-                  <option value="Agriculture">Agriculture & Processing</option>
-                  <option value="Retail & Wholesale">Retail & Wholesale</option>
-                  <option value="Healthcare">Healthcare & Pharma</option>
+                  <option value="Agriculture">Agriculture & Agro-Processing</option>
+                  <option value="Manufacturing">Manufacturing & Engineering</option>
+                  <option value="Retail & Trade">Retail & Trade</option>
+                  <option value="Healthcare">Healthcare & Pharmaceuticals</option>
                 </select>
               </div>
             </div>
           </div>
 
-          {/* Registrations */}
+          {/* Tax & Identifiers */}
           <div>
-            <span className="font-label-bold text-xs uppercase tracking-wider text-primary dark:text-primary-fixed block mb-3">
-              {t('registrationsIdentifiers')}
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block mb-3">
+              Tax & MSME Identifiers
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('gstNumber')}
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  GSTIN
                 </label>
                 <input
                   value={gst}
                   onChange={(e) => setGst(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm uppercase font-mono border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="27AAPFT2098A1Z5"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  placeholder="e.g. 27AAPFT2098A1Z5"
                   type="text"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('panNumber')}
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Company PAN
                 </label>
                 <input
                   value={pan}
                   onChange={(e) => setPan(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm uppercase font-mono border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="AAPFT2098A"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  placeholder="e.g. AAPFT2098A"
                   type="text"
                 />
               </div>
 
               <div className="md:col-span-2 flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('udyamNumber')}
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Udyam MSME Registration Number
                 </label>
                 <input
                   value={udyamRegNumber}
                   onChange={(e) => setUdyamRegNumber(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm uppercase font-mono border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="UDYAM-UP-01-0023456"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  placeholder="e.g. UDYAM-UP-01-0023456"
                   type="text"
                 />
               </div>
             </div>
           </div>
 
-          {/* Contact & Operational Info */}
+          {/* Contact & Location */}
           <div>
-            <span className="font-label-bold text-xs uppercase tracking-wider text-primary dark:text-primary-fixed block mb-3">
-              {t('operationalContactDetails')}
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block mb-3">
+              Registered Office & Contact
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2 flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('businessAddress')} <span className="text-error">*</span>
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Registered Address <span className="text-rose-500">*</span>
                 </label>
-                <input
+                <textarea
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Plot/Shop No, Street, City, State, PIN"
+                  rows={2}
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Registered commercial address"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Official Phone <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="+91 98765 00000"
                   type="text"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('contactPhone')} <span className="text-error">*</span>
-                </label>
-                <input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="+91 98765 00000"
-                  type="tel"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('contactEmail')} <span className="text-error">*</span>
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Official Email <span className="text-rose-500">*</span>
                 </label>
                 <input
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="business@email.com"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="contact@company.in"
                   type="email"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('annualTurnover')} (₹)
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Annual Turnover (INR)
                 </label>
                 <input
                   value={annualTurnover}
                   onChange={(e) => setAnnualTurnover(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                   placeholder="e.g. 2500000"
                   type="number"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="font-label-bold text-xs text-on-surface dark:text-[#EDEDED]">
-                  {t('employeeCount')}
+                <label className="text-xs font-semibold text-neutral-700 dark:text-[#EDEDED]">
+                  Employee Count
                 </label>
                 <input
                   value={employeeCount}
                   onChange={(e) => setEmployeeCount(e.target.value)}
-                  className="px-4 py-2.5 bg-surface-container-low dark:bg-[#16191F] rounded-xl text-on-surface dark:text-[#EDEDED] font-body-md text-sm border border-outline-variant/40 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="px-4 py-2 bg-neutral-50 dark:bg-[#16191F] rounded-xl text-neutral-900 dark:text-[#EDEDED] text-xs sm:text-sm border border-neutral-200 dark:border-white/[0.08] focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                   placeholder="e.g. 15"
                   type="number"
                 />
@@ -301,19 +301,19 @@ export const BusinessModal = ({ isOpen, onClose, editingBusiness = null }) => {
           </div>
 
           {/* Footer Buttons */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-surface-container dark:border-white/[0.08]">
+          <div className="flex justify-end gap-3 pt-4 border-t border-neutral-200 dark:border-white/[0.08]">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl font-label-bold text-xs text-on-surface-variant dark:text-[#8A8F98] hover:bg-surface-container-low dark:hover:bg-[#16191F] transition-colors"
+              className="px-5 py-2.5 rounded-xl font-semibold text-xs text-neutral-700 dark:text-[#8A8F98] hover:bg-neutral-100 dark:hover:bg-[#16191F] transition-colors cursor-pointer"
             >
-              {t('cancel')}
+              Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-label-bold text-xs shadow-md hover:scale-105 transition-all"
+              className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
             >
-              {t('saveBusiness')}
+              Save Business Profile
             </button>
           </div>
         </form>
@@ -322,3 +322,5 @@ export const BusinessModal = ({ isOpen, onClose, editingBusiness = null }) => {
     document.body
   );
 };
+
+export default BusinessModal;

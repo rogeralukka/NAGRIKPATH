@@ -1,7 +1,15 @@
 import React from 'react';
 import { useData, ADMIN_VIEWS } from '../../context/DataContext';
 import { useLang } from '../../context/LangContext';
-import Icon from '../../../features/yojna-setu/components/Icon';
+import {
+  LayoutDashboard,
+  FileText,
+  CheckSquare,
+  Clock,
+  Sliders,
+  PanelLeftClose,
+  PanelLeft
+} from 'lucide-react';
 
 export const AdminSidebar = () => {
   const { currentView, navigateTo, isSidebarCollapsed, setIsSidebarCollapsed } = useData();
@@ -10,11 +18,11 @@ export const AdminSidebar = () => {
   const activeView = ADMIN_VIEWS.includes(currentView) ? currentView : 'admin-overview';
 
   const navItems = [
-    { key: 'overview', label: t('overview'), icon: 'dashboard', path: 'admin-overview' },
-    { key: 'all-applications', label: t('allApplications'), icon: 'assignment', path: 'admin-all-applications' },
-    { key: 'review-applications', label: t('reviewApplications'), icon: 'fact_check', path: 'admin-review-application' },
-    { key: 'review-later', label: t('reviewLater'), icon: 'schedule', path: 'admin-review-later' },
-    { key: 'scheme-management', label: t('schemeManagement'), icon: 'settings_applications', path: 'admin-scheme-management' },
+    { key: 'overview', label: t('overview') || 'Overview', icon: LayoutDashboard, path: 'admin-overview' },
+    { key: 'all-applications', label: t('allApplications') || 'All Applications', icon: FileText, path: 'admin-all-applications' },
+    { key: 'review-applications', label: t('reviewApplications') || 'Review Applications', icon: CheckSquare, path: 'admin-review-application' },
+    { key: 'review-later', label: t('reviewLater') || 'Review Later', icon: Clock, path: 'admin-review-later' },
+    { key: 'scheme-management', label: t('schemeManagement') || 'Scheme Management', icon: Sliders, path: 'admin-scheme-management' },
   ];
 
   return (
@@ -23,31 +31,37 @@ export const AdminSidebar = () => {
       {!isSidebarCollapsed && (
         <div
           onClick={() => setIsSidebarCollapsed(true)}
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 lg:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-xs z-30 lg:hidden"
         />
       )}
 
       <aside
-        className={`sticky top-16 h-[calc(100vh-4rem)] h-[calc(100dvh-4rem)] shrink-0 self-start z-30 bg-white dark:bg-[#0F1115] border-r-2 border-slate-300 dark:border-white/[0.08] shadow-sm transition-all duration-300 flex flex-col ${
-          isSidebarCollapsed ? 'w-16' : 'w-64'
+        className={`sticky top-16 h-[calc(100vh-4rem)] shrink-0 self-start z-30 bg-white dark:bg-[#0F1115] border-r border-neutral-200 dark:border-white/[0.08] shadow-xs transition-all duration-300 ease-in-out flex flex-col ${
+          isSidebarCollapsed ? 'w-18' : 'w-64'
         }`}
       >
-        {/* Hamburger Toggle Bar */}
-        <div className="h-12 shrink-0 border-b border-slate-200 dark:border-white/[0.08] flex items-center px-3 justify-start">
+        {/* Collapse Toggle Bar */}
+        <div className="h-12 shrink-0 border-b border-neutral-200 dark:border-white/[0.08] flex items-center px-3.5 justify-start">
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             type="button"
             aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center cursor-pointer"
+            className="p-1.5 rounded-xl text-neutral-600 dark:text-[#8A8F98] hover:bg-neutral-100 dark:hover:bg-[#16191F] hover:text-neutral-900 dark:hover:text-[#EDEDED] transition-colors focus:outline-none cursor-pointer"
           >
-            <Icon name="menu" size={20} />
+            {isSidebarCollapsed ? (
+              <PanelLeft className="w-5 h-5 text-neutral-600 dark:text-[#EDEDED]" />
+            ) : (
+              <PanelLeftClose className="w-5 h-5 text-neutral-600 dark:text-[#EDEDED]" />
+            )}
           </button>
         </div>
 
         <nav className="p-2 space-y-1 flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
           {navItems.map((item) => {
             const isActive = activeView === item.path;
+            const ItemIcon = item.icon;
+
             return (
               <button
                 key={item.key}
@@ -58,19 +72,17 @@ export const AdminSidebar = () => {
                   }
                 }}
                 title={isSidebarCollapsed ? item.label : undefined}
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200 text-left cursor-pointer ${
+                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 text-left cursor-pointer ${
                   isActive
-                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold border border-blue-200 dark:border-blue-800/60'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
-                }`}
+                    ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-bold border border-blue-200 dark:border-blue-800/60 shadow-xs'
+                    : 'text-neutral-600 dark:text-[#8A8F98] hover:bg-neutral-100 dark:hover:bg-[#16191F] hover:text-neutral-900 dark:hover:text-[#EDEDED]'
+                } ${isSidebarCollapsed ? 'justify-center !space-x-0 px-2' : ''}`}
               >
-                <Icon
-                  name={item.icon}
-                  size={20}
-                  className={`shrink-0 ${
+                <ItemIcon
+                  className={`shrink-0 w-5 h-5 ${
                     isActive
                       ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-slate-500 dark:text-slate-400'
+                      : 'text-neutral-500 dark:text-[#8A8F98]'
                   }`}
                 />
 
@@ -85,3 +97,5 @@ export const AdminSidebar = () => {
     </>
   );
 };
+
+export default AdminSidebar;

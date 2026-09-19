@@ -1,5 +1,11 @@
 import React from 'react';
-import Icon from './Icon';
+import {
+  CreditCard,
+  ArrowRight,
+  Clock,
+  Star,
+  Check
+} from 'lucide-react';
 
 function getSchemeDepartment(scheme) {
   if (scheme.department) return scheme.department;
@@ -21,12 +27,14 @@ function getSchemeBenefit(scheme) {
 /**
  * SchemeCard:
  * Dynamic scheme card reflecting engine evaluation (ELIGIBLE-READY, ELIGIBLE-BLOCKED, INELIGIBLE).
- * Supports multi-scheme checkbox selection for batch applications.
+ * Supports multi-scheme checkbox selection and interactive bookmark starring.
  */
 export function SchemeCard({
   scheme,
   isSelected = false,
   onToggleSelect,
+  isBookmarked = false,
+  onToggleBookmark,
   onInspectDelta,
   onSynthesizeDocket
 }) {
@@ -50,12 +58,11 @@ export function SchemeCard({
         className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.99] transition-all shadow-md shadow-blue-500/10 flex items-center justify-center gap-1.5 cursor-pointer"
       >
         <span>Synthesize Application Docket</span>
-        <Icon name="arrow_forward" size={16} />
+        <ArrowRight className="w-4 h-4" />
       </button>
     );
   } else if (scheme.state === 'ELIGIBLE-BLOCKED') {
     const expiredCount = scheme.delta?.expiredDocs?.length || 0;
-    const hasMissing = scheme.delta?.missingDocs?.length > 0;
     const badgeText = expiredCount > 0 ? (expiredCount === 1 ? '1 Prerequisite Expired' : `${expiredCount} Prerequisites Expired`) : 'Missing Credential';
 
     badgePill = (
@@ -70,7 +77,7 @@ export function SchemeCard({
         className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-neutral-800 dark:text-[#EDEDED] bg-neutral-100 hover:bg-neutral-200 dark:bg-[#16191F] dark:hover:bg-[#1D212A] border border-neutral-300 dark:border-white/[0.08] active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
       >
         <span>Inspect Eligibility Delta</span>
-        <Icon name="arrow_forward" size={16} />
+        <ArrowRight className="w-4 h-4" />
       </button>
     );
   } else {
@@ -81,7 +88,7 @@ export function SchemeCard({
       </span>
     );
 
-    actionButton = null; // Strictly NO action button for ineligible
+    actionButton = null;
   }
 
   const isEligible = scheme.state !== 'INELIGIBLE';
@@ -95,7 +102,7 @@ export function SchemeCard({
       }`}
     >
       <div>
-        {/* Top Badges & Checkbox */}
+        {/* Top Badges, Checkbox & Bookmark Star */}
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
             {isEligible && (
@@ -113,7 +120,7 @@ export function SchemeCard({
                 title={isSelected ? 'Deselect scheme' : 'Select scheme for batch application'}
                 aria-label={isSelected ? `Deselect ${scheme.name}` : `Select ${scheme.name}`}
               >
-                <Icon name="check" size={12} className="stroke-[3]" />
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
               </button>
             )}
             <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold uppercase tracking-wider bg-neutral-100 dark:bg-[#16191F] text-neutral-600 dark:text-[#8A8F98] border border-neutral-200 dark:border-white/[0.08]">
@@ -123,7 +130,28 @@ export function SchemeCard({
               {scheme.sector}
             </span>
           </div>
-          {badgePill}
+
+          <div className="flex items-center gap-2">
+            {badgePill}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleBookmark && onToggleBookmark(scheme.id);
+              }}
+              className="p-1 rounded-lg text-neutral-400 hover:text-amber-500 hover:bg-neutral-100 dark:hover:bg-[#16191F] transition-all cursor-pointer"
+              title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Scheme'}
+              aria-label={isBookmarked ? `Remove Bookmark for ${scheme.name}` : `Bookmark ${scheme.name}`}
+            >
+              <Star
+                className={`w-4 h-4 transition-colors ${
+                  isBookmarked
+                    ? 'fill-amber-400 text-amber-500'
+                    : 'text-neutral-400 dark:text-[#8A8F98]'
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Scheme Title & Department */}
@@ -137,7 +165,7 @@ export function SchemeCard({
         {/* Benefit Summary Well */}
         <div className="mt-4 p-3 rounded-xl bg-neutral-50 dark:bg-[#16191F] border border-neutral-200/70 dark:border-white/[0.06]">
           <div className="flex items-start gap-2.5">
-            <Icon name="credit_card" size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+            <CreditCard className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
             <div>
               <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-[#8A8F98] block">
                 Entitlement / Benefit
@@ -162,7 +190,7 @@ export function SchemeCard({
       <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex flex-col gap-2">
         <div className="flex items-center justify-between text-[11px] text-neutral-500 dark:text-[#8A8F98]">
           <span className="inline-flex items-center gap-1">
-            <Icon name="schedule" size={14} />
+            <Clock className="w-3.5 h-3.5" />
             {scheme.deadline || 'Always Open'}
           </span>
           <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase">
@@ -176,4 +204,3 @@ export function SchemeCard({
 }
 
 export default SchemeCard;
-

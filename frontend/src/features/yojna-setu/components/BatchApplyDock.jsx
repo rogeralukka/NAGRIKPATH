@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from './Icon';
+import { ArrowRight } from 'lucide-react';
 
 /**
  * BatchApplyDock:
@@ -41,7 +41,7 @@ export function BatchApplyDock({ selectedCount, onClear, onBatchApply }) {
           className="py-2 px-4 sm:px-5 rounded-full text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all shadow-md shadow-blue-500/20 flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
         >
           <span>Apply to Selected ({selectedCount})</span>
-          <Icon name="arrow_forward" size={14} />
+          <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </div>
