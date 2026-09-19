@@ -1,13 +1,12 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Home } from "lucide-react";
-import ThemeToggle from "../components/shared/ThemeToggle";
-import LanguageSelector from "../components/shared/LanguageSelector";
+import TopNav from "../components/layout/TopNav";
 
 /**
  * NotFoundPage (404 Error Page)
- * Ultra-minimal, authoritative 404 layout.
- * Pure whitespace, massive typography, crisp high-contrast actions, zero AI slop.
+ * Reuses the shared system TopNav component for 100% pixel parity.
+ * Clean, minimal 404 canvas with zero extraneous clutter.
  */
 export default function NotFoundPage() {
   const navigate = useNavigate();
@@ -26,24 +25,12 @@ export default function NotFoundPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-between bg-white dark:bg-[#08090A] text-neutral-900 dark:text-neutral-100 selection:bg-blue-500 selection:text-white transition-colors duration-300 relative overflow-hidden">
-      {/* Minimal Top Header */}
-      <header className="w-full shrink-0 px-6 py-4 flex items-center justify-between relative z-20">
-        <Link
-          to={hasSession ? "/home" : "/"}
-          className="font-bold text-xl tracking-tight text-neutral-900 dark:text-white hover:opacity-80 transition-opacity"
-          title="NagrikPath"
-        >
-          NagrikPath
-        </Link>
-        <div className="flex items-center space-x-2">
-          <ThemeToggle />
-          <LanguageSelector />
-        </div>
-      </header>
+    <div className="min-h-screen w-full flex flex-col bg-white dark:bg-[#08090A] text-neutral-900 dark:text-neutral-100 selection:bg-blue-500 selection:text-white transition-colors duration-300">
+      {/* Shared Application TopNav */}
+      <TopNav isPublic={!hasSession} />
 
       {/* Main Centered 404 Canvas */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 text-center relative z-10">
+      <main className="flex-1 flex flex-col items-center justify-center p-6 text-center">
         {/* Massive 404 Display */}
         <div
           className="text-8xl sm:text-9xl font-extrabold tracking-tight text-neutral-200 dark:text-white/[0.07] select-none leading-none mb-2"
@@ -83,9 +70,6 @@ export default function NotFoundPage() {
           </button>
         </div>
       </main>
-
-      {/* Empty bottom spacer for perfect vertical balance */}
-      <div className="h-14 shrink-0" />
     </div>
   );
 }
