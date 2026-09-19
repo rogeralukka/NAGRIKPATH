@@ -13,14 +13,14 @@ import {
 
 /**
  * DeltaResolverDrawer:
- * Slide-over drawer presenting prerequisite document deltas and simulated DPI pull actions.
- * Enforces Esc ownership, dynamic head-of-household name resolution, and verbatim strings.
+ * Elevated floating side card presenting prerequisite document deltas and simulated DPI pull actions.
+ * Positioned with breathing room from viewport edges matching AI assistant panel aesthetics.
  */
 export function DeltaResolverDrawer({ isOpen, onClose, scheme, onSynthesizeDocket }) {
   const { activeMember, headOfHousehold, simulateIssuancePull } = useHousehold();
   const [pullingDocTag, setPullingDocTag] = useState(null);
 
-  // Esc key listener for drawer
+  // Esc key listener for card
   useEffect(() => {
     if (!isOpen) return;
 
@@ -57,23 +57,26 @@ export function DeltaResolverDrawer({ isOpen, onClose, scheme, onSynthesizeDocke
   const headName = headOfHousehold?.name || 'Head of Household';
 
   return (
-    <div
-      data-modal-open="true"
-      className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm transition-opacity"
-      onClick={onClose}
-    >
+    <div data-modal-open="true" className="fixed inset-0 z-50 pointer-events-auto">
+      {/* Backdrop: Subtle dimming / blur overlay that dismisses card when clicked */}
       <div
-        className="relative w-full max-w-lg h-full bg-white dark:bg-[#0F1115] border-l border-neutral-200 dark:border-white/[0.08] shadow-2xl flex flex-col justify-between overflow-hidden"
+        className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] transition-opacity duration-300"
+        onClick={onClose}
+      />
+
+      {/* Elevated Floating Side Card */}
+      <div
+        className="fixed right-4 sm:right-6 top-20 bottom-6 w-[450px] max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] rounded-2xl shadow-2xl border border-neutral-200 dark:border-white/[0.08] bg-white dark:bg-[#0F1115] z-50 flex flex-col overflow-hidden animate-in slide-in-from-right duration-300"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="p-6 border-b border-neutral-200 dark:border-white/[0.08] flex items-start justify-between">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 mb-2">
-              <GitFork className="w-3.5 h-3.5" />
-              ELIGIBILITY DELTA RESOLUTION
+        {/* Header (shrink-0) */}
+        <div className="shrink-0 p-5 sm:p-6 border-b border-neutral-200 dark:border-white/[0.08] flex items-start justify-between gap-3 bg-neutral-50/50 dark:bg-[#16191F]/30">
+          <div className="min-w-0 flex-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 mb-2">
+              <GitFork className="w-3.5 h-3.5 shrink-0" />
+              <span>ELIGIBILITY DELTA RESOLUTION</span>
             </div>
-            <h2 className="text-xl font-bold text-neutral-900 dark:text-[#EDEDED]">
+            <h2 className="text-lg sm:text-xl font-bold text-neutral-900 dark:text-[#EDEDED] leading-snug truncate">
               {scheme.name}
             </h2>
             <p className="text-xs text-neutral-500 dark:text-[#8A8F98] mt-1">
@@ -83,15 +86,16 @@ export function DeltaResolverDrawer({ isOpen, onClose, scheme, onSynthesizeDocke
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-neutral-500 dark:text-[#8A8F98] hover:bg-neutral-100 dark:hover:bg-[#16191F] hover:text-neutral-900 dark:hover:text-[#EDEDED] transition-colors"
-            title="Close Drawer (Esc)"
+            className="shrink-0 p-1.5 rounded-lg text-neutral-500 dark:text-[#8A8F98] hover:bg-neutral-100 dark:hover:bg-[#16191F] hover:text-neutral-900 dark:hover:text-[#EDEDED] transition-colors cursor-pointer"
+            title="Close (Esc)"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Content Body: Document Checklist */}
-        <div className="flex-1 p-6 overflow-y-auto space-y-4">
+        {/* Body (flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6) */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-6 space-y-6">
           <div className="flex items-center justify-between pb-2 border-b border-neutral-100 dark:border-white/[0.06]">
             <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-[#8A8F98]">
               Prerequisite Credentials & Ledger Audit
@@ -144,17 +148,17 @@ export function DeltaResolverDrawer({ isOpen, onClose, scheme, onSynthesizeDocke
                     <button
                       onClick={() => handleFetchIssuance(doc)}
                       disabled={isCurrentlyPulling}
-                      className="w-full py-2 px-3 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all shadow-sm flex items-center justify-center gap-2"
+                      className="w-full py-2 px-3 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {isCurrentlyPulling ? (
                         <>
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          Querying State e-District Gateway...
+                          <span>Querying State e-District Gateway...</span>
                         </>
                       ) : (
                         <>
                           <CloudDownload className="w-4 h-4" />
-                          Fetch Latest Issuance (State e-District via DigiLocker Pull API)
+                          <span>Fetch Latest Issuance (State e-District via DigiLocker Pull API)</span>
                         </>
                       )}
                     </button>
@@ -227,12 +231,12 @@ export function DeltaResolverDrawer({ isOpen, onClose, scheme, onSynthesizeDocke
           )}
         </div>
 
-        {/* Bottom Drawer CTA Footer */}
-        <div className="p-6 border-t border-neutral-200 dark:border-white/[0.08] bg-neutral-50 dark:bg-[#0F1115]">
+        {/* Footer (shrink-0 p-5 border-t border-neutral-200 dark:border-white/[0.08] bg-neutral-50 dark:bg-[#16191F]/50) */}
+        <div className="shrink-0 p-5 border-t border-neutral-200 dark:border-white/[0.08] bg-neutral-50 dark:bg-[#16191F]/50">
           {isReady ? (
             <button
               onClick={() => onSynthesizeDocket(scheme)}
-              className="w-full py-3 px-4 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.99] transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.99] transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 cursor-pointer"
             >
               Synthesize Application Docket →
             </button>

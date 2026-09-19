@@ -21,8 +21,15 @@ function getSchemeBenefit(scheme) {
 /**
  * SchemeCard:
  * Dynamic scheme card reflecting engine evaluation (ELIGIBLE-READY, ELIGIBLE-BLOCKED, INELIGIBLE).
+ * Supports multi-scheme checkbox selection for batch applications.
  */
-export function SchemeCard({ scheme, onInspectDelta, onSynthesizeDocket }) {
+export function SchemeCard({
+  scheme,
+  isSelected = false,
+  onToggleSelect,
+  onInspectDelta,
+  onSynthesizeDocket
+}) {
   const department = getSchemeDepartment(scheme);
   const benefit = getSchemeBenefit(scheme);
 
@@ -40,7 +47,7 @@ export function SchemeCard({ scheme, onInspectDelta, onSynthesizeDocket }) {
     actionButton = (
       <button
         onClick={() => onSynthesizeDocket(scheme)}
-        className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.99] transition-all shadow-md shadow-blue-500/10 flex items-center justify-center gap-1.5"
+        className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.99] transition-all shadow-md shadow-blue-500/10 flex items-center justify-center gap-1.5 cursor-pointer"
       >
         <span>Synthesize Application Docket</span>
         <Icon name="arrow_forward" size={16} />
@@ -60,7 +67,7 @@ export function SchemeCard({ scheme, onInspectDelta, onSynthesizeDocket }) {
     actionButton = (
       <button
         onClick={() => onInspectDelta(scheme)}
-        className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-neutral-800 dark:text-[#EDEDED] bg-neutral-100 hover:bg-neutral-200 dark:bg-[#16191F] dark:hover:bg-[#1D212A] border border-neutral-300 dark:border-white/[0.08] active:scale-[0.99] transition-all flex items-center justify-center gap-1.5"
+        className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-neutral-800 dark:text-[#EDEDED] bg-neutral-100 hover:bg-neutral-200 dark:bg-[#16191F] dark:hover:bg-[#1D212A] border border-neutral-300 dark:border-white/[0.08] active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
       >
         <span>Inspect Eligibility Delta</span>
         <Icon name="arrow_forward" size={16} />
@@ -77,12 +84,38 @@ export function SchemeCard({ scheme, onInspectDelta, onSynthesizeDocket }) {
     actionButton = null; // Strictly NO action button for ineligible
   }
 
+  const isEligible = scheme.state !== 'INELIGIBLE';
+
   return (
-    <div className="flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#0F1115] border border-neutral-200 dark:border-white/[0.08] shadow-sm hover:shadow-md transition-shadow">
+    <div
+      className={`flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#0F1115] border transition-all duration-200 ${
+        isSelected
+          ? 'border-blue-500 ring-2 ring-blue-500/25 shadow-md bg-blue-50/20 dark:bg-blue-950/10'
+          : 'border-neutral-200 dark:border-white/[0.08] shadow-sm hover:shadow-md'
+      }`}
+    >
       <div>
-        {/* Top Badges */}
+        {/* Top Badges & Checkbox */}
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
+            {isEligible && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleSelect && onToggleSelect(scheme.id);
+                }}
+                className={`w-5 h-5 rounded flex items-center justify-center transition-all cursor-pointer border ${
+                  isSelected
+                    ? 'bg-blue-600 border-blue-600 text-white'
+                    : 'bg-white dark:bg-[#16191F] border-neutral-300 dark:border-white/[0.15] text-transparent hover:border-blue-500'
+                }`}
+                title={isSelected ? 'Deselect scheme' : 'Select scheme for batch application'}
+                aria-label={isSelected ? `Deselect ${scheme.name}` : `Select ${scheme.name}`}
+              >
+                <Icon name="check" size={12} className="stroke-[3]" />
+              </button>
+            )}
             <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold uppercase tracking-wider bg-neutral-100 dark:bg-[#16191F] text-neutral-600 dark:text-[#8A8F98] border border-neutral-200 dark:border-white/[0.08]">
               {scheme.level || 'CENTRAL'}
             </span>

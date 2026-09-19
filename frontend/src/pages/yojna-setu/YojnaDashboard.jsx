@@ -4,13 +4,14 @@ import { useSchemeEvaluation } from '../../features/yojna-setu/hooks/useSchemeEv
 import { SchemeHeader } from '../../features/yojna-setu/components/SchemeHeader';
 import { FilterBar } from '../../features/yojna-setu/components/FilterBar';
 import { SchemeCard } from '../../features/yojna-setu/components/SchemeCard';
+import { BatchApplyDock } from '../../features/yojna-setu/components/BatchApplyDock';
 import { DeltaResolverDrawer } from '../../features/yojna-setu/components/DeltaResolverDrawer';
 import { DocketPreviewModal } from '../../features/yojna-setu/components/DocketPreviewModal';
 
 /**
  * YojnaDashboard (/yojna-setu):
  * Primary view orchestrating dynamic scheme evaluation, discriminated single-overlay state,
- * and seamless eligibility delta resolution.
+ * multi-scheme selection, batch application dock, and seamless eligibility delta resolution.
  */
 export function YojnaDashboard() {
   const {
@@ -25,6 +26,9 @@ export function YojnaDashboard() {
   // Discriminated Single-Overlay State: exactly ONE overlay exists in the DOM at any given moment
   const [activeOverlay, setActiveOverlay] = useState({ type: null, schemeId: null });
 
+  // Multi-Scheme Selection State
+  const [selectedSchemeIds, setSelectedSchemeIds] = useState([]);
+
   // Filtering State
   const [selectedSector, setSelectedSector] = useState('ALL');
   const [selectedMatch, setSelectedMatch] = useState('ALL');
@@ -35,6 +39,17 @@ export function YojnaDashboard() {
     if (!activeOverlay.schemeId) return null;
     return evaluatedSchemes.find((s) => s.id === activeOverlay.schemeId) || null;
   }, [activeOverlay.schemeId, evaluatedSchemes]);
+
+  // Selection Handlers
+  const handleToggleSelectScheme = (schemeId) => {
+    setSelectedSchemeIds((prev) =>
+      prev.includes(schemeId) ? prev.filter((id) => id !== schemeId) : [...prev, schemeId]
+    );
+  };
+
+  const handleClearSelection = () => {
+    setSelectedSchemeIds([]);
+  };
 
   // Overlay Handlers enforcing Single-Overlay Invariant
   const handleInspectDelta = (scheme) => {
@@ -47,6 +62,26 @@ export function YojnaDashboard() {
 
   const handleCloseOverlay = () => {
     setActiveOverlay({ type: null, schemeId: null });
+  };
+
+  // Batch Apply Handler: Resolves blockers first or opens docket synthesis
+  const handleBatchApply = () => {
+    if (selectedSchemeIds.length === 0) return;
+
+    const selectedSchemes = evaluatedSchemes.filter((s) => selectedSchemeIds.includes(s.id));
+
+    // If ANY selected scheme is ELIGIBLE-BLOCKED, open Delta Resolver card for the first blocked scheme
+    const firstBlocked = selectedSchemes.find((s) => s.state === 'ELIGIBLE-BLOCKED');
+    if (firstBlocked) {
+      setActiveOverlay({ type: 'drawer', schemeId: firstBlocked.id });
+      return;
+    }
+
+    // If ALL selected schemes are ELIGIBLE-READY, synthesize docket for the first ready scheme
+    const firstReady = selectedSchemes.find((s) => s.state === 'ELIGIBLE-READY') || selectedSchemes[0];
+    if (firstReady) {
+      setActiveOverlay({ type: 'modal', schemeId: firstReady.id });
+    }
   };
 
   // Filter schemes
@@ -79,7 +114,7 @@ export function YojnaDashboard() {
   }, [evaluatedSchemes, selectedSector, selectedMatch, searchQuery]);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full pb-24">
       {/* Top Scheme Header */}
       <SchemeHeader
         activeMember={activeMember}
@@ -105,6 +140,8 @@ export function YojnaDashboard() {
             <SchemeCard
               key={scheme.id}
               scheme={scheme}
+              isSelected={selectedSchemeIds.includes(scheme.id)}
+              onToggleSelect={handleToggleSelectScheme}
               onInspectDelta={handleInspectDelta}
               onSynthesizeDocket={handleSynthesizeDocket}
             />
@@ -118,6 +155,15 @@ export function YojnaDashboard() {
             No schemes currently indexed for this sector in PoC cache.
           </p>
         </div>
+      )}
+
+      {/* Floating Bottom Batch Apply Dock */}
+      {selectedSchemeIds.length > 0 && (
+        <BatchApplyDock
+          selectedCount={selectedSchemeIds.length}
+          onClear={handleClearSelection}
+          onBatchApply={handleBatchApply}
+        />
       )}
 
       {/* Discriminated Overlays: Mathematically at most ONE overlay can mount at any time */}
