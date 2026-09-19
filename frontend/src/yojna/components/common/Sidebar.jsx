@@ -38,7 +38,7 @@ export const Sidebar = () => {
       )}
 
       <aside
-        className={`sticky top-16 h-[calc(100vh-4rem)] shrink-0 self-start z-30 bg-white dark:bg-[#0F1115] border-r border-neutral-200 dark:border-white/[0.08] shadow-xs transition-all duration-300 ease-in-out flex flex-col ${
+        className={`h-full shrink-0 z-30 bg-white dark:bg-[#0F1115] border-r border-neutral-200 dark:border-white/[0.08] shadow-xs transition-all duration-300 ease-in-out flex flex-col ${
           isSidebarCollapsed ? 'w-18' : 'w-64'
         }`}
       >

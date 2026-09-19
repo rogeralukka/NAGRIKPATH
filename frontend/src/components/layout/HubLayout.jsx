@@ -3,21 +3,28 @@ import { Outlet } from "react-router-dom";
 import TopNav from "./TopNav";
 import Sidebar from "./Sidebar";
 import AgenticDrawer from "../../features/agent/AgenticDrawer";
-import { useUI } from "../../context/UIContext";
 
 /**
- * HubLayout: NagrikPath Main Services (Home, Jan Manch, Notifications)
- * Features TopNav, collapsible Sidebar, and floating AgenticDrawer on hub routes.
+ * HubLayout: Viewport App Shell for NagrikPath Main Services (Home, Jan Manch, Notifications).
+ * - Root: h-screen max-h-screen w-full flex flex-col overflow-hidden
+ * - TopNav: shrink-0 (pinned at top)
+ * - Body Row: flex-1 flex overflow-hidden min-h-0 w-full
+ * - Sidebar: stationary left column
+ * - Main: flex-1 h-full overflow-y-auto overflow-x-hidden min-w-0 custom-scrollbar (THE ONLY SCROLLING CONTAINER)
  */
 export default function HubLayout() {
-  const { sidebarCollapsed } = useUI();
-
   return (
-    <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-[#08090A] text-slate-900 dark:text-[#EDEDED] transition-colors duration-300 ease-in-out">
+    <div className="h-screen max-h-screen w-full flex flex-col overflow-hidden bg-neutral-50 dark:bg-[#08090A] text-slate-900 dark:text-[#EDEDED] transition-colors duration-300 ease-in-out">
+      {/* Pinned Top Navigation Bar */}
       <TopNav isPublic={false} />
-      <div className="flex-1 flex relative items-start">
+
+      {/* Body Row Container */}
+      <div className="flex-1 flex overflow-hidden min-h-0 w-full">
+        {/* Stationary Sidebar */}
         <Sidebar />
-        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+
+        {/* Main Content Area (THE ONLY SCROLLING CONTAINER) */}
+        <main className="flex-1 h-full overflow-y-auto overflow-x-hidden min-w-0 custom-scrollbar p-4 sm:p-6 lg:p-8">
           <div className="max-w-6xl mx-auto w-full">
             <Outlet />
           </div>

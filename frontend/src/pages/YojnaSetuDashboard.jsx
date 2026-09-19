@@ -26,7 +26,7 @@ import DocketModal from "../components/shared/DocketModal";
 /**
  * YojnaSetuDashboard (/yojna-setu)
  * Thin orchestrator mounting real components from the Yojna Setu repository.
- * Supports all Citizen and Admin views with zero duplicate UI logic.
+ * Configured as a stationary sidebar + isolated scrolling main container.
  */
 export default function YojnaSetuDashboard() {
   const navigate = useNavigate();
@@ -57,28 +57,30 @@ export default function YojnaSetuDashboard() {
   };
 
   return (
-    <div className="flex-1 flex relative items-start">
-      {/* Real Collapsible Sidebar / Admin Sidebar from Repo */}
+    <div className="flex-1 flex overflow-hidden min-h-0 w-full relative">
+      {/* Real Collapsible Sidebar / Admin Sidebar from Repo (Stationary) */}
       {isAdminView || isAdmin ? <AdminSidebar /> : <Sidebar />}
 
-      {/* Main View Router delegating to Real Repo Components */}
-      <main className="flex-1 min-w-0 transition-all duration-300 min-h-[calc(100vh-4rem)]">
-        {/* Citizen Views */}
-        {activeView === "dashboard" && <YojnaDashboard />}
-        {activeView === "scheme-detail" && <SchemeDetail onOpenDocket={() => setDocketModalOpen(true)} />}
-        {activeView === "application-form" && <ApplicationForm />}
-        {activeView === "my-business" && <MyBusiness />}
-        {activeView === "my-applications" && <MyApplications />}
-        {activeView === "bookmarks" && <Bookmarks />}
-        {activeView === "notifications" && <Notifications />}
-        {activeView === "share-eligibility" && <ShareEligibility />}
+      {/* Main View Router delegating to Real Repo Components (THE ONLY SCROLLING CONTAINER) */}
+      <main className="flex-1 h-full overflow-y-auto overflow-x-hidden min-w-0 custom-scrollbar p-4 sm:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* Citizen Views */}
+          {activeView === "dashboard" && <YojnaDashboard />}
+          {activeView === "scheme-detail" && <SchemeDetail onOpenDocket={() => setDocketModalOpen(true)} />}
+          {activeView === "application-form" && <ApplicationForm />}
+          {activeView === "my-business" && <MyBusiness />}
+          {activeView === "my-applications" && <MyApplications />}
+          {activeView === "bookmarks" && <Bookmarks />}
+          {activeView === "notifications" && <Notifications />}
+          {activeView === "share-eligibility" && <ShareEligibility />}
 
-        {/* Admin Views */}
-        {activeView === "admin-overview" && <AdminOverview />}
-        {activeView === "admin-all-applications" && <AllApplications />}
-        {activeView === "admin-review-application" && <ReviewApplication />}
-        {activeView === "admin-review-later" && <ReviewLater />}
-        {activeView === "admin-scheme-management" && <SchemeManagement />}
+          {/* Admin Views */}
+          {activeView === "admin-overview" && <AdminOverview />}
+          {activeView === "admin-all-applications" && <AllApplications />}
+          {activeView === "admin-review-application" && <ReviewApplication />}
+          {activeView === "admin-review-later" && <ReviewLater />}
+          {activeView === "admin-scheme-management" && <SchemeManagement />}
+        </div>
       </main>
 
       {/* Real Toast System from Repo */}
@@ -96,4 +98,3 @@ export default function YojnaSetuDashboard() {
     </div>
   );
 }
-

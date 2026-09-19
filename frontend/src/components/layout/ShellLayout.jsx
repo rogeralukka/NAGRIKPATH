@@ -5,8 +5,7 @@ import { useUI } from "../../context/UIContext";
 
 /**
  * ShellLayout: Dedicated wrapper for pipeline modules (Shiksha, Rozgar, Kisan, Nagar).
- * Features TopNav, module header with "Phase 2 Pipeline" status, and manages the
- * read-only Schema Target Drawer.
+ * Locked Viewport App Shell with isolated scrolling main canvas.
  */
 export default function ShellLayout() {
   const [selectedScheme, setSelectedScheme] = useState(null);
@@ -46,9 +45,9 @@ export default function ShellLayout() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-[#08090A] text-slate-900 dark:text-[#EDEDED] transition-colors duration-300 ease-in-out">
+    <div className="h-screen max-h-screen w-full flex flex-col overflow-hidden bg-slate-100 dark:bg-[#08090A] text-slate-900 dark:text-[#EDEDED] transition-colors duration-300 ease-in-out">
       <TopNav isPublic={false} />
-      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 h-full overflow-y-auto overflow-x-hidden min-w-0 custom-scrollbar p-4 sm:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto w-full">
           <Outlet context={{ onOpenDrawer: handleOpenDrawer }} />
         </div>
@@ -135,7 +134,7 @@ export default function ShellLayout() {
               )}
             </div>
 
-            {/* Bottom Notice (NO 'Notify Me' button per rule) */}
+            {/* Bottom Notice */}
             <div className="pt-4 border-t border-slate-100 dark:border-white/[0.08] text-[11px] text-slate-500 dark:text-[#8A8F98] text-center">
               Schema Target Sandbox preview for Digital India 2.0 evaluation. Integration locked for Phase 2+.
             </div>

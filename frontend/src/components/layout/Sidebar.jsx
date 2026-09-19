@@ -6,9 +6,8 @@ import Icon from "../../features/yojna-setu/components/Icon";
 
 /**
  * Hub Sidebar component.
- * Collapsible to icon-only mode.
- * Hamburger toggle rendered BELOW the top nav bar, on the left, attached to the sidebar itself.
- * Items: All Services, Jan Manch, Notifications.
+ * Stationary left column within Viewport App Shell.
+ * Internal overflow scrolling if content exceeds height.
  */
 export default function Sidebar() {
   const location = useLocation();
@@ -37,7 +36,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`sticky top-16 h-[calc(100vh-4rem)] h-[calc(100dvh-4rem)] shrink-0 self-start z-30 bg-white dark:bg-[#0F1115] border-r-2 border-slate-300 dark:border-white/[0.08] shadow-sm transition-all duration-300 flex flex-col ${
+      className={`h-full shrink-0 z-30 bg-white dark:bg-[#0F1115] border-r-2 border-slate-300 dark:border-white/[0.08] shadow-xs transition-all duration-300 flex flex-col ${
         sidebarCollapsed ? "w-16" : "w-64"
       }`}
     >
