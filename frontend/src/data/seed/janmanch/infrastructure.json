@@ -1,0 +1,40 @@
+﻿{
+  "sector": "infrastructure",
+  "title": "Pradhan Mantri Gram Sadak Yojana (PMGSY)",
+  "description": "All-Weather Rural Road Connectivity & Upgraded Bridges",
+  "state": "Telangana",
+  "central": {
+    "sanctionedCr": 111000,
+    "disbursedCr": 98500,
+    "targetUnits": 125000,
+    "deliveredUnits": 104200,
+    "unitLabel": "Km Rural Roads Upgraded & Drone-Surveyed"
+  },
+  "stateData": {
+    "sanctionedCr": 4200,
+    "disbursedCr": 3850,
+    "targetUnits": 10500,
+    "deliveredUnits": 9420,
+    "unitLabel": "Km All-Weather Rural Roadways Completed"
+  },
+  "updates": [
+    {
+      "type": "Policy Change",
+      "title": "Mandatory Quality Audit via Central Road Research Institute (CRRI)",
+      "date": "15-09-2026",
+      "summary": "Third-party pavement roughness surveys mandated before contractor final milestone payment release."
+    },
+    {
+      "type": "Budget Allocation",
+      "title": "PMGSY-III Final Phase Bridge Construction Sanctions",
+      "date": "04-09-2026",
+      "summary": "Released ₹3,100 Cr for all-weather connectivity bridges across perennial flood-prone river corridors."
+    },
+    {
+      "type": "Legislative Review",
+      "title": "Public Works Standing Committee Deliberations",
+      "date": "25-08-2026",
+      "summary": "Blacklisted contractor for unapproved delay in 18km connectivity link between state agricultural market and national highway."
+    }
+  ]
+}

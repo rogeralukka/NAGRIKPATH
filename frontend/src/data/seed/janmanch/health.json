@@ -1,0 +1,40 @@
+﻿{
+  "sector": "health",
+  "title": "Ayushman Bharat & Public Health Infrastructure",
+  "description": "Universal Health Coverage, Golden Cards & Primary Health Centers",
+  "state": "Telangana",
+  "central": {
+    "sanctionedCr": 86200,
+    "disbursedCr": 79800,
+    "targetUnits": 120000000,
+    "deliveredUnits": 104000000,
+    "unitLabel": "Beneficiary Families Issued Verified Health Cards"
+  },
+  "stateData": {
+    "sanctionedCr": 4800,
+    "disbursedCr": 4560,
+    "targetUnits": 8500000,
+    "deliveredUnits": 7800000,
+    "unitLabel": "Aarogyasri / Ayushman Co-branded Families Covered"
+  },
+  "updates": [
+    {
+      "type": "Policy Change",
+      "title": "Standardized Surgical Package Rates Rationalization",
+      "date": "12-09-2026",
+      "summary": "Revised 400 hospital procedure ceilings to curb fraudulent claim billing by empanelled network hospitals."
+    },
+    {
+      "type": "Legislative Review",
+      "title": "Hospital Empanelment Disciplinary Committee Hearing",
+      "date": "01-09-2026",
+      "summary": "Suspended 3 nursing facilities found charging unauthorized out-of-pocket fees to card holders."
+    },
+    {
+      "type": "Budget Allocation",
+      "title": "Critical Care Infrastructure Emergency Grant Allocation",
+      "date": "18-08-2026",
+      "summary": "Approved ₹1,500 Cr for 50-bed pediatric ICUs in secondary public hospitals across the state."
+    }
+  ]
+}

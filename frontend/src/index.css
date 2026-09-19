@@ -1,0 +1,247 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Bengali', 'Noto Sans Gurmukhi', 'Noto Sans Gujarati', 'Noto Sans Oriya', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Kannada', 'Noto Sans Malayalam', 'Noto Nastaliq Urdu', sans-serif;
+  }
+
+  /* Custom Ultra-Thin 4px Pill Scrollbar */
+  /* Modern Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+  }
+
+  .dark * {
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  }
+
+  /* WebKit (Chrome, Edge, Safari, Opera) */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.6);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
+}
+
+/* Custom Scrollbar Utility Classes for explicit targeted scrolling containers */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+.dark .custom-scrollbar {
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Scoped RTL Text Direction Support (Urdu text flow without mirroring application shell) */
+[data-lang="ur"] input:not([type="checkbox"]):not([type="radio"]),
+[data-lang="ur"] textarea,
+[data-lang="ur"] p,
+[data-lang="ur"] h1,
+[data-lang="ur"] h2,
+[data-lang="ur"] h3,
+[data-lang="ur"] h4,
+[data-lang="ur"] h5,
+[data-lang="ur"] h6,
+[data-lang="ur"] label,
+[data-lang="ur"] .rtl-text {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Animations from Stitch Exports */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+.draw-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 1.5s ease-in-out forwards;
+}
+
+/* Slide Title Editorial Reveal */
+.slide-content h1 {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.active-slide .slide-content h1 {
+  transition-delay: 0.25s;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Glassmorphic Classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.dark .glass-panel {
+  background: rgba(42, 45, 51, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+body {
+  background-color: #e9ece6;
+  color: #191c1e;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.dark body,
+.dark {
+  background-color: #08090A;
+  color: #EDEDED;
+}
+
+/* 3-Tier Obsidian Dark System Overrides for Yojna Setu */
+.dark .bg-surface,
+.dark .bg-surface-dim,
+.dark .bg-surface-bright {
+  background-color: #08090A !important;
+}
+
+.dark .bg-surface-container-lowest {
+  background-color: #0F1115 !important;
+}
+
+.dark .bg-surface-container-low,
+.dark .bg-surface-container,
+.dark .bg-surface-container-high {
+  background-color: #16191F !important;
+}
+
+.dark .bg-surface-container-highest {
+  background-color: #1D212A !important;
+}
+
+.dark .border-outline-variant,
+.dark .border-outline-variant\/30,
+.dark .border-outline-variant\/20,
+.dark .border-slate-800,
+.dark .border-slate-700,
+.dark .border-slate-600 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.dark .text-on-surface {
+  color: #EDEDED !important;
+}
+
+.dark .text-on-surface-variant {
+  color: #8A8F98 !important;
+}
+
+/* Print Styles for Share Eligibility PDF download */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  header, aside, .no-print, button {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

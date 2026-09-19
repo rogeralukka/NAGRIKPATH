@@ -1,0 +1,40 @@
+﻿{
+  "sector": "jaljeevan",
+  "title": "Jal Jeevan Mission (Har Ghar Jal)",
+  "description": "Functional Household Tap Connections & Real-time Water Quality",
+  "state": "Telangana",
+  "central": {
+    "sanctionedCr": 70000,
+    "disbursedCr": 62400,
+    "targetUnits": 193000000,
+    "deliveredUnits": 151000000,
+    "unitLabel": "Rural Tap Connections Geo-tagged & Functional"
+  },
+  "stateData": {
+    "sanctionedCr": 5450,
+    "disbursedCr": 5120,
+    "targetUnits": 5450000,
+    "deliveredUnits": 4820000,
+    "unitLabel": "Household Tap Connections Operational"
+  },
+  "updates": [
+    {
+      "type": "Policy Change",
+      "title": "IoT Sensor Water Quality Automated Telemetry Guidelines",
+      "date": "10-09-2026",
+      "summary": "Real-time residual chlorine and pH monitoring connected to state public dashboard with automated audit alerts."
+    },
+    {
+      "type": "Legislative Review",
+      "title": "State Water & Sanitation Mission Field Quality Verification",
+      "date": "05-09-2026",
+      "summary": "Independent state engineering audit confirmed 98% continuous tap water flow during scheduled daily distribution."
+    },
+    {
+      "type": "Budget Allocation",
+      "title": "State Matching Share Disbursement for Fluoride Filtration",
+      "date": "22-08-2026",
+      "summary": "State finance department released ₹820 Cr for multi-village surface water filtration plants."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+﻿{
+  "sector": "agriculture",
+  "title": "Agriculture & Farmer Welfare",
+  "description": "Direct Income Support, Crop Insurance & Market Infrastructure",
+  "state": "Telangana",
+  "central": {
+    "sanctionedCr": 60000,
+    "disbursedCr": 58250,
+    "targetUnits": 112000000,
+    "deliveredUnits": 108000000,
+    "unitLabel": "Farmers with Direct Benefit Transfers"
+  },
+  "stateData": {
+    "sanctionedCr": 7500,
+    "disbursedCr": 7280,
+    "targetUnits": 6800000,
+    "deliveredUnits": 6550000,
+    "unitLabel": "Farmers with Rythu Bandhu / DBT Verification"
+  },
+  "updates": [
+    {
+      "type": "Policy Change",
+      "title": "Mandatory e-KYC Facial Authentication via Aadhaar RD Service",
+      "date": "14-09-2026",
+      "summary": "Replaced biometrics with AI-assisted liveness detection across CSC centers to prevent proxy subsidy claims."
+    },
+    {
+      "type": "Budget Allocation",
+      "title": "Supplementary Kharif Crop Insurance Risk Fund Release",
+      "date": "02-09-2026",
+      "summary": "Cabinet sanctioned ₹2,400 Cr buffer for localized weather outbreak compensations across state river basins."
+    },
+    {
+      "type": "Legislative Review",
+      "title": "Public Accounts Committee Review on APMC Mandi Procurement",
+      "date": "28-08-2026",
+      "summary": "Resolution passed to mandate electronic weighbridge calibration with public audit logs in all state mandis."
+    }
+  ]
+}
