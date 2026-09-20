@@ -4,7 +4,7 @@ import React from "react";
  * JanManchHeader:
  * Title: "JAN MANCH"
  * Subtitle: "Empirical Governance Accountability Tracker"
- * Scope Pill: "SCOPE: TELANGANA STATE // CENTRAL ALLOCATION"
+ * Scope Monospace Label: "Telangana // Central Allocation"
  */
 export default function JanManchHeader() {
   return (
@@ -19,7 +19,7 @@ export default function JanManchHeader() {
       </div>
 
       <div>
-        <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+        <span className="text-xs font-mono font-medium text-neutral-500 dark:text-neutral-400">
           Telangana // Central Allocation
         </span>
       </div>
