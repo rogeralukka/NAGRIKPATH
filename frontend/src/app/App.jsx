@@ -4,6 +4,7 @@ import { HouseholdProvider } from "../context/HouseholdContext";
 import { ThemeProvider } from "../context/ThemeContext";
 import { LanguageProvider } from "../context/LanguageContext";
 import { UIProvider, useUI } from "../context/UIContext";
+import ErrorBoundary from "../components/shared/ErrorBoundary";
 import AppRoutes from "./routes";
 
 /**
@@ -53,7 +54,9 @@ export default function App() {
           <LanguageProvider>
             <UIProvider>
               <GlobalEscHandler />
-              <AppRoutes />
+              <ErrorBoundary moduleName="NagrikPath Application">
+                <AppRoutes />
+              </ErrorBoundary>
             </UIProvider>
           </LanguageProvider>
         </ThemeProvider>

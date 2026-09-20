@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { SearchX } from 'lucide-react';
 import { useSchemeEvaluation } from '../../features/yojna-setu/hooks/useSchemeEvaluation';
 import { useData } from '../../yojna/context/DataContext';
@@ -8,6 +8,8 @@ import { SchemeCard } from '../../features/yojna-setu/components/SchemeCard';
 import { BatchApplyDock } from '../../features/yojna-setu/components/BatchApplyDock';
 import { DeltaResolverDrawer } from '../../features/yojna-setu/components/DeltaResolverDrawer';
 import { DocketPreviewModal } from '../../features/yojna-setu/components/DocketPreviewModal';
+import { ErrorBoundary } from '../../components/shared/ErrorBoundary';
+import { SchemeGridSkeleton } from '../../components/shared/skeletons';
 
 /**
  * YojnaDashboard (/yojna-setu):
@@ -27,6 +29,22 @@ export function YojnaDashboard() {
   } = useSchemeEvaluation();
 
   const { bookmarks = [], toggleBookmark } = useData();
+
+  // Subtle evaluation loading transition on context change
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const contextKey = `${isEnterpriseContext ? 'ent' : 'cit'}-${activeMember?.id || 'none'}-${activeBusiness?.id || 'none'}`;
+  const prevContextKey = useRef(contextKey);
+
+  useEffect(() => {
+    if (prevContextKey.current !== contextKey) {
+      prevContextKey.current = contextKey;
+      setIsEvaluating(true);
+      const timer = setTimeout(() => {
+        setIsEvaluating(false);
+      }, 220);
+      return () => clearTimeout(timer);
+    }
+  }, [contextKey]);
 
   // Single-Overlay State: exactly ONE overlay exists in the DOM at any given moment
   const [activeOverlay, setActiveOverlay] = useState({ type: null, schemeId: null });
@@ -187,31 +205,35 @@ export function YojnaDashboard() {
         onSelectSort={setSelectedSort}
       />
 
-      {/* Scheme Cards Grid */}
-      {filteredSchemes.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredSchemes.map((scheme) => (
-            <SchemeCard
-              key={scheme.id}
-              scheme={scheme}
-              isSelected={selectedSchemeIds.includes(scheme.id)}
-              onToggleSelect={handleToggleSelectScheme}
-              isBookmarked={bookmarks.includes(scheme.id)}
-              onToggleBookmark={toggleBookmark}
-              onInspectDelta={handleInspectDelta}
-              onSynthesizeDocket={handleSynthesizeDocket}
-            />
-          ))}
-        </div>
-      ) : (
-        /* Empty State */
-        <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#0F1115] border border-neutral-200 dark:border-white/[0.08] shadow-sm">
-          <SearchX className="w-10 h-10 text-neutral-400 dark:text-[#8A8F98] mx-auto mb-2" />
-          <p className="text-sm font-medium text-neutral-600 dark:text-[#8A8F98]">
-            No schemes currently match the selected criteria.
-          </p>
-        </div>
-      )}
+      {/* Scheme Cards Grid wrapped in ErrorBoundary with Skeleton loading */}
+      <ErrorBoundary moduleName="Scheme Recommendations">
+        {isEvaluating ? (
+          <SchemeGridSkeleton count={6} />
+        ) : filteredSchemes.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filteredSchemes.map((scheme) => (
+              <SchemeCard
+                key={scheme.id}
+                scheme={scheme}
+                isSelected={selectedSchemeIds.includes(scheme.id)}
+                onToggleSelect={handleToggleSelectScheme}
+                isBookmarked={bookmarks.includes(scheme.id)}
+                onToggleBookmark={toggleBookmark}
+                onInspectDelta={handleInspectDelta}
+                onSynthesizeDocket={handleSynthesizeDocket}
+              />
+            ))}
+          </div>
+        ) : (
+          /* Empty State */
+          <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#0F1115] border border-neutral-200 dark:border-white/[0.08] shadow-sm">
+            <SearchX className="w-10 h-10 text-neutral-400 dark:text-[#8A8F98] mx-auto mb-2" />
+            <p className="text-sm font-medium text-neutral-600 dark:text-[#8A8F98]">
+              No schemes currently match the selected criteria.
+            </p>
+          </div>
+        )}
+      </ErrorBoundary>
 
       {/* Floating Bottom Batch Apply Dock */}
       {selectedSchemeIds.length > 0 && (

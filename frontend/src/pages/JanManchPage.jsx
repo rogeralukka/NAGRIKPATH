@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import JanManchHeader from "../features/jan-manch/components/JanManchHeader";
 import SectorSelector from "../features/jan-manch/components/SectorSelector";
 import DualAxisFinancialChart from "../features/jan-manch/components/DualAxisFinancialChart";
 import DualAxisPhysicalChart from "../features/jan-manch/components/DualAxisPhysicalChart";
 import VarianceAnalysisCard from "../features/jan-manch/components/VarianceAnalysisCard";
+import ErrorBoundary from "../components/shared/ErrorBoundary";
+import { JanManchSkeleton } from "../components/shared/skeletons";
 
 import agricultureData from "../data/seed/janmanch/agriculture.json";
 import jaljeevanData from "../data/seed/janmanch/jaljeevan.json";
@@ -24,11 +26,26 @@ const SECTOR_DATA_MAP = {
  * 2. SectorSelector with 4 strict sectors.
  * 3. 2-Column Responsive Recharts Grid (DualAxisFinancialChart + DualAxisPhysicalChart)
  *    with responsive container guard "h-72 min-h-[288px] w-full min-w-0" and isAnimationActive={false}.
- * 4. VarianceAnalysisCard with pure mathematical telemetry (Ground Rule 5).
- * 5. Governance updates & audit feed from seeded data.
+ * 4. Resilient Error Boundary wrappers on every chart widget.
+ * 5. Sleek Skeleton Loaders during sector switching with zero CLS.
+ * 6. VarianceAnalysisCard with pure mathematical telemetry.
+ * 7. Governance updates & audit feed from seeded data.
  */
 export default function JanManchPage() {
   const [activeSectorKey, setActiveSectorKey] = useState("agriculture");
+  const [isPending, startTransition] = useTransition();
+  const [isSwitching, setIsSwitching] = useState(false);
+
+  const handleSelectSector = (sectorKey) => {
+    if (sectorKey === activeSectorKey) return;
+    setIsSwitching(true);
+    startTransition(() => {
+      setActiveSectorKey(sectorKey);
+      setTimeout(() => {
+        setIsSwitching(false);
+      }, 150);
+    });
+  };
 
   const currentSectorData = SECTOR_DATA_MAP[activeSectorKey] || SECTOR_DATA_MAP.agriculture;
 
@@ -40,28 +57,42 @@ export default function JanManchPage() {
       {/* 2. STRICT SCOPE: Exactly 4 Sector Tabs */}
       <SectorSelector
         activeSector={activeSectorKey}
-        onSelectSector={(sectorKey) => setActiveSectorKey(sectorKey)}
+        onSelectSector={handleSelectSector}
       />
 
-      {/* 3. Dual-Axis Recharts Delivery Dashboard (Financial vs Physical Verified) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <DualAxisFinancialChart
-          centralData={currentSectorData.central}
-          stateData={currentSectorData.stateData}
-          sectorTitle={currentSectorData.title}
-        />
-        <DualAxisPhysicalChart
-          centralData={currentSectorData.central}
-          stateData={currentSectorData.stateData}
-        />
-      </div>
+      {isSwitching ? (
+        /* Sleek Skeleton Loading state during sector switch */
+        <JanManchSkeleton />
+      ) : (
+        <>
+          {/* 3. Dual-Axis Recharts Delivery Dashboard (Financial vs Physical Verified) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <ErrorBoundary moduleName="Financial Delivery Chart">
+              <DualAxisFinancialChart
+                centralData={currentSectorData.central}
+                stateData={currentSectorData.stateData}
+                sectorTitle={currentSectorData.title}
+              />
+            </ErrorBoundary>
 
-      {/* 4. Empirical Variance Telemetry Card (Ground Rule 5 Lock) */}
-      <VarianceAnalysisCard
-        centralData={currentSectorData.central}
-        stateData={currentSectorData.stateData}
-        sectorTitle={currentSectorData.title}
-      />
+            <ErrorBoundary moduleName="Physical Delivery Chart">
+              <DualAxisPhysicalChart
+                centralData={currentSectorData.central}
+                stateData={currentSectorData.stateData}
+              />
+            </ErrorBoundary>
+          </div>
+
+          {/* 4. Empirical Variance Telemetry Card */}
+          <ErrorBoundary moduleName="Variance Analysis">
+            <VarianceAnalysisCard
+              centralData={currentSectorData.central}
+              stateData={currentSectorData.stateData}
+              sectorTitle={currentSectorData.title}
+            />
+          </ErrorBoundary>
+        </>
+      )}
 
       {/* 5. Governance Audit Feed & Transparency Updates */}
       <div className="space-y-4">
