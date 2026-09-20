@@ -19,14 +19,10 @@ import {
   Zap,
   ShieldCheck,
   DollarSign,
-  Activity,
-  Layers,
-  Database,
-  Cpu,
-  BarChart3
+  RefreshCw
 } from "lucide-react";
 import TimeRangeFilter from "./TimeRangeFilter";
-import nationalPulseData from "../../../data/seed/janmanch/national_pulse.json";
+import { useNationalPulse } from "../hooks/useNationalPulse";
 
 /**
  * Category styling map for clean badges
@@ -51,7 +47,7 @@ const CATEGORY_STYLES = {
 /**
  * Custom Tooltip for National Pulse Visualizers
  */
-function NationalChartTooltip({ active, payload, label, unit, chartType }) {
+function NationalChartTooltip({ active, payload, label, unit }) {
   if (!active || !payload || !payload.length) return null;
 
   return (
@@ -82,38 +78,39 @@ function NationalChartTooltip({ active, payload, label, unit, chartType }) {
 }
 
 /**
- * Single Indicator Card with dynamic visualizer (Line / Area / Composed)
+ * Single Indicator Card with dynamic visualizer and strict semantic color rules
  */
-function NationalIndicatorCard({ indicator, timeRange }) {
-  const fullTimeline = indicator.timeline || [];
-  const timeline =
-    timeRange === "3Y"
-      ? fullTimeline.slice(-3)
-      : timeRange === "5Y"
-      ? fullTimeline.slice(-5)
-      : fullTimeline;
-
+function NationalIndicatorCard({ indicator }) {
+  const timeline = indicator.timeline || [];
   const firstEntry = timeline[0] || {};
   const latestEntry = timeline[timeline.length - 1] || {};
-  const prevEntry = timeline[timeline.length - 2] || firstEntry;
 
   const latestVal = latestEntry.val;
   const firstVal = firstEntry.val;
-  const prevVal = prevEntry.val;
 
   // Calculate percentage delta
-  const isInverseMetric = indicator.id === "power-deficit" || indicator.id === "cpi-inflation";
   const deltaPct =
     firstVal && latestVal !== undefined
       ? ((latestVal - firstVal) / firstVal) * 100
       : 0;
-  const isPositiveTrend = isInverseMetric ? deltaPct <= 0 : deltaPct >= 0;
+
+  // Strict semantic color rules:
+  // - INR/USD: Higher number means Rupee depreciation (worse). Never green!
+  // - CPI Inflation & Power Deficit: Lower is better. Drop is green!
+  // - Other indicators: Higher is better.
+  let isPositiveTrend = false;
+  if (indicator.id === "inr-usd-rate") {
+    isPositiveTrend = deltaPct < 0; // Rupee strengthening is good, weakening is bad
+  } else if (indicator.direction === "lower-is-better" || indicator.id === "power-deficit" || indicator.id === "cpi-inflation") {
+    isPositiveTrend = deltaPct <= 0;
+  } else {
+    isPositiveTrend = deltaPct >= 0;
+  }
 
   const categoryStyle =
     CATEGORY_STYLES[indicator.category] ||
     "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700";
 
-  // Gradient ID unique to indicator
   const gradientId = `grad-${indicator.id}`;
 
   return (
@@ -202,7 +199,7 @@ function NationalIndicatorCard({ indicator, timeRange }) {
                 axisLine={false}
                 tickFormatter={(val) => `${val}%`}
               />
-              <Tooltip content={<NationalChartTooltip unit={indicator.unit} chartType="composed" />} />
+              <Tooltip content={<NationalChartTooltip unit={indicator.unit} />} />
               <Bar
                 yAxisId="left"
                 dataKey="val"
@@ -241,12 +238,12 @@ function NationalIndicatorCard({ indicator, timeRange }) {
               />
               <YAxis
                 stroke="#8A8F98"
-                domain={[(dataMin) => Math.max(0, Number((dataMin * 0.9).toFixed(2))), (dataMax) => Number((dataMax * 1.08).toFixed(2))]}
+                domain={['dataMin - 1', 'dataMax + 1']}
                 tick={{ fontSize: 9, fontFamily: "monospace" }}
                 tickLine={false}
                 axisLine={false}
               />
-              <Tooltip content={<NationalChartTooltip unit={indicator.unit} chartType="line" />} />
+              <Tooltip content={<NationalChartTooltip unit={indicator.unit} />} />
               <Line
                 type="monotone"
                 dataKey="val"
@@ -288,7 +285,7 @@ function NationalIndicatorCard({ indicator, timeRange }) {
                 axisLine={false}
                 tickFormatter={(val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val)}
               />
-              <Tooltip content={<NationalChartTooltip unit={indicator.unit} chartType="area" />} />
+              <Tooltip content={<NationalChartTooltip unit={indicator.unit} />} />
               <Area
                 type="monotone"
                 dataKey="val"
@@ -308,15 +305,11 @@ function NationalIndicatorCard({ indicator, timeRange }) {
 
 /**
  * NationalPulseView:
- * Definitive 12-Macroeconomic & DPI Matrix with:
- * 1. Top Macro Vital Bar (4 High-Impact KPI Tiles)
- * 2. Interactive Time Range Filter ([ 3Y ] [ 5Y ] [ ALL ])
- * 3. 3x4 Grid of 12 responsive Recharts visualizers
- * 4. Provenance & Compliance Footer
+ * Adaptive Data Hub connecting to Express backend with offline fallback.
  */
 export default function NationalPulseView() {
   const [timeRange, setTimeRange] = useState("ALL");
-  const indicators = nationalPulseData.indicators || [];
+  const { indicators, isLoading, isLiveBackend, lastSynced, provenance, syncNow } = useNationalPulse(timeRange);
 
   // Macro Vital Indicators
   const gstInd = indicators.find((i) => i.id === "gst-collections");
@@ -324,50 +317,59 @@ export default function NationalPulseView() {
   const forexInd = indicators.find((i) => i.id === "forex-reserves");
   const inrInd = indicators.find((i) => i.id === "inr-usd-rate");
 
+  const gstLatest = gstInd?.timeline?.[gstInd.timeline.length - 1]?.val || 212400;
+  const upiLatest = upiInd?.timeline?.[upiInd.timeline.length - 1]?.val || 20.4;
+  const forexLatest = forexInd?.timeline?.[forexInd.timeline.length - 1]?.val || 708;
+  const inrLatest = inrInd?.timeline?.[inrInd.timeline.length - 1]?.val || 86.8;
+
   const macroVitals = [
     {
       id: "gst",
       title: "Gross Monthly GST",
-      value: "₹2,12,400",
+      value: `₹${gstLatest.toLocaleString("en-IN")}`,
       unit: "Cr / mo",
       delta: "+124.1%",
       deltaLabel: "gain since FY21",
       citation: "REF: GSTN-PORTAL",
       icon: TrendingUp,
+      isPositive: true,
       accent: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-900/60"
     },
     {
       id: "upi",
       title: "UPI Monthly Volume",
-      value: "20.4",
+      value: `${upiLatest}`,
       unit: "Billion Txns",
       delta: "+787.0%",
       deltaLabel: "gain since FY21",
       citation: "REF: NPCI-UPI-2026",
       icon: Zap,
+      isPositive: true,
       accent: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/50 border-indigo-200 dark:border-indigo-900/60"
     },
     {
       id: "forex",
       title: "Foreign Exchange Reserves",
-      value: "$708",
+      value: `$${forexLatest}`,
       unit: "USD Bn",
       delta: "+22.3%",
       deltaLabel: "growth since FY21",
       citation: "REF: RBI-DBIE-2026",
       icon: ShieldCheck,
+      isPositive: true,
       accent: "text-blue-500 bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-900/60"
     },
     {
       id: "inr",
       title: "INR / USD Reference Rate",
-      value: "₹86.8",
+      value: `₹${inrLatest}`,
       unit: "/ USD",
       delta: "+17.0%",
-      deltaLabel: "6Y mean shift",
+      deltaLabel: "6Y mean shift (deprec)",
       citation: "REF: RBI-WSS-2026",
       icon: DollarSign,
-      accent: "text-amber-500 bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-900/60"
+      isPositive: false, // Rupee weakening is shown in red/rose!
+      accent: "text-rose-500 bg-rose-50 dark:bg-rose-950/50 border-rose-200 dark:border-rose-900/60"
     }
   ];
 
@@ -398,8 +400,18 @@ export default function NationalPulseView() {
                     {vital.unit}
                   </span>
                 </div>
-                <div className="flex items-center space-x-1 mt-0.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
-                  <ArrowUpRight size={12} className="stroke-[2.5]" />
+                <div
+                  className={`flex items-center space-x-1 mt-0.5 text-[11px] font-bold ${
+                    vital.isPositive
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-rose-600 dark:text-rose-400"
+                  }`}
+                >
+                  {vital.isPositive ? (
+                    <ArrowUpRight size={12} className="stroke-[2.5]" />
+                  ) : (
+                    <ArrowDownRight size={12} className="stroke-[2.5]" />
+                  )}
                   <span>{vital.delta}</span>
                   <span className="text-slate-400 dark:text-[#8A8F98] font-normal font-sans">
                     {vital.deltaLabel}
@@ -415,25 +427,52 @@ export default function NationalPulseView() {
         })}
       </div>
 
-      {/* 2. Interactive Time Range Filter Header Row */}
+      {/* 2. Interactive Time Range Filter Header Row + Live Telemetry Status */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-200 dark:border-white/[0.08]">
         <div>
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-[#EDEDED] font-mono">
-            Macroeconomic &amp; Digital Public Infrastructure Matrix
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-[#8A8F98]">
+          <div className="flex items-center space-x-2.5">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-[#EDEDED] font-mono">
+              Macroeconomic &amp; Digital Public Infrastructure Matrix
+            </h2>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-[#8A8F98] mt-0.5">
             12 empirical indicators tracking national progress from FY21 to FY26
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <span className="text-xs font-mono text-slate-500 dark:text-[#8A8F98] hidden sm:inline">
-            Horizon: <strong className="text-slate-800 dark:text-[#EDEDED]">{timeRange === "ALL" ? "FY21–FY26 (6Y)" : timeRange === "5Y" ? "FY22–FY26 (5Y)" : "FY24–FY26 (3Y)"}</strong>
-          </span>
-          <TimeRangeFilter
-            selectedRange={timeRange}
-            onRangeChange={(range) => setTimeRange(range)}
-          />
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Live Telemetry Strip */}
+          <div className="flex items-center space-x-2">
+            {isLiveBackend ? (
+              <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900/60 text-xs font-mono text-emerald-700 dark:text-emerald-300">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Live Backend Sync: {lastSynced || "Daily"}</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-neutral-100 dark:bg-[#16191F] border border-neutral-200 dark:border-white/[0.08] text-xs font-mono text-neutral-500 dark:text-[#8A8F98]">
+                <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                <span>Local Sovereign Baseline (Sep 2026)</span>
+              </span>
+            )}
+
+            {isLiveBackend && (
+              <button
+                type="button"
+                onClick={syncNow}
+                title="Force refresh live spot rates"
+                className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 dark:text-[#8A8F98] hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+              >
+                <RefreshCw size={12} />
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <TimeRangeFilter
+              selectedRange={timeRange}
+              onRangeChange={(range) => setTimeRange(range)}
+            />
+          </div>
         </div>
       </div>
 
@@ -443,7 +482,6 @@ export default function NationalPulseView() {
           <NationalIndicatorCard
             key={indicator.id}
             indicator={indicator}
-            timeRange={timeRange}
           />
         ))}
       </div>
@@ -451,7 +489,7 @@ export default function NationalPulseView() {
       {/* 4. Provenance & Compliance Footer */}
       <div className="pt-4 pb-2 border-t border-slate-200 dark:border-white/[0.08] text-center">
         <p className="text-xs font-mono text-slate-500 dark:text-[#8A8F98]">
-          {nationalPulseData.provenance}
+          {provenance}
         </p>
       </div>
     </div>
