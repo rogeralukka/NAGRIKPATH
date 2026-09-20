@@ -7,17 +7,53 @@
       "title": "INR vs USD Reference Rate",
       "unit": "₹ / USD",
       "source": "RBI Financial Markets Bulletin",
-      "citationRef": "REF: RBI-WSS-2026",
+      "citationRef": "REF: RBI-WSS-SEP-2026",
       "category": "Macroeconomics",
       "chartType": "line",
-      "color": "#3b82f6",
+      "direction": "lower-is-better",
+      "currentHeadline": "₹95.94",
+      "color": "#f43f5e",
+      "weeklyTimeline": [
+        { "date": "14 Sep", "day": "Mon", "val": 95.78 },
+        { "date": "15 Sep", "day": "Tue", "val": 95.81 },
+        { "date": "16 Sep", "day": "Wed", "val": 95.85 },
+        { "date": "17 Sep", "day": "Thu", "val": 95.72 },
+        { "date": "18 Sep", "day": "Fri", "val": 95.90 },
+        { "date": "19 Sep", "day": "Sat", "val": 95.92 },
+        { "date": "20 Sep", "day": "Sun", "val": 95.94 }
+      ],
+      "monthlyTimeline": [
+        { "date": "22 Aug", "val": 95.82 },
+        { "date": "25 Aug", "val": 95.74 },
+        { "date": "26 Aug", "val": 95.43 },
+        { "date": "27 Aug", "val": 94.12 },
+        { "date": "28 Aug", "val": 95.20 },
+        { "date": "30 Aug", "val": 95.05 },
+        { "date": "02 Sep", "val": 94.88 },
+        { "date": "04 Sep", "val": 94.62 },
+        { "date": "07 Sep", "val": 95.10 },
+        { "date": "09 Sep", "val": 95.68 },
+        { "date": "11 Sep", "val": 96.02 },
+        { "date": "14 Sep", "val": 95.78 },
+        { "date": "16 Sep", "val": 95.85 },
+        { "date": "18 Sep", "val": 95.90 },
+        { "date": "20 Sep", "val": 95.94 }
+      ],
+      "annualTimeline": [
+        { "fy": "FY21", "val": 74.2 },
+        { "fy": "FY22", "val": 77.8 },
+        { "fy": "FY23", "val": 82.2 },
+        { "fy": "FY24", "val": 83.3 },
+        { "fy": "FY25", "val": 88.2 },
+        { "fy": "FY26", "val": 95.94 }
+      ],
       "timeline": [
         { "fy": "FY21", "val": 74.2 },
         { "fy": "FY22", "val": 77.8 },
-        { "fy": "FY23", "val": 82.1 },
-        { "fy": "FY24", "val": 83.1 },
-        { "fy": "FY25", "val": 84.8 },
-        { "fy": "FY26", "val": 86.8 }
+        { "fy": "FY23", "val": 82.2 },
+        { "fy": "FY24", "val": 83.3 },
+        { "fy": "FY25", "val": 88.2 },
+        { "fy": "FY26", "val": 95.94 }
       ]
     },
     {
@@ -28,6 +64,7 @@
       "citationRef": "REF: GSTN-PORTAL",
       "category": "Fiscal & Revenue",
       "chartType": "composed",
+      "direction": "higher-is-better",
       "color": "#10b981",
       "timeline": [
         { "fy": "FY21", "val": 94800, "yoy": 7.2 },
@@ -46,6 +83,7 @@
       "citationRef": "REF: NPCI-UPI-2026",
       "category": "Digital Public Infra",
       "chartType": "area",
+      "direction": "higher-is-better",
       "color": "#6366f1",
       "timeline": [
         { "fy": "FY21", "val": 2.3 },
@@ -64,6 +102,7 @@
       "citationRef": "REF: RBI-DBIE-2026",
       "category": "Macroeconomics",
       "chartType": "area",
+      "direction": "higher-is-better",
       "color": "#10b981",
       "timeline": [
         { "fy": "FY21", "val": 579 },
@@ -82,6 +121,7 @@
       "citationRef": "REF: MOSPI-CPI-2026",
       "category": "Macroeconomics",
       "chartType": "line",
+      "direction": "lower-is-better",
       "color": "#f59e0b",
       "timeline": [
         { "fy": "FY21", "val": 6.2 },
@@ -100,6 +140,7 @@
       "citationRef": "REF: MNRE-PORTAL",
       "category": "Energy & Climate",
       "chartType": "area",
+      "direction": "higher-is-better",
       "color": "#10b981",
       "timeline": [
         { "fy": "FY21", "val": 94.4 },
@@ -118,6 +159,7 @@
       "citationRef": "REF: DBT-BHARAT",
       "category": "Social Welfare",
       "chartType": "area",
+      "direction": "higher-is-better",
       "color": "#8b5cf6",
       "timeline": [
         { "fy": "FY21", "val": 3.82 },
@@ -136,6 +178,7 @@
       "citationRef": "REF: NHA-PMJAY",
       "category": "Healthcare",
       "chartType": "area",
+      "direction": "higher-is-better",
       "color": "#ec4899",
       "timeline": [
         { "fy": "FY21", "val": 14.8 },
@@ -154,6 +197,7 @@
       "citationRef": "REF: JJM-IMIS",
       "category": "Public Infrastructure",
       "chartType": "line",
+      "direction": "higher-is-better",
       "color": "#06b6d4",
       "timeline": [
         { "fy": "FY21", "val": 38.4 },
@@ -172,6 +216,7 @@
       "citationRef": "REF: DIGILOCKER-MEITY",
       "category": "Digital Public Infra",
       "chartType": "area",
+      "direction": "higher-is-better",
       "color": "#3b82f6",
       "timeline": [
         { "fy": "FY21", "val": 4.2 },
@@ -190,6 +235,7 @@
       "citationRef": "REF: MORTH-ANNUAL",
       "category": "Public Infrastructure",
       "chartType": "area",
+      "direction": "higher-is-better",
       "color": "#f97316",
       "timeline": [
         { "fy": "FY21", "val": 136.4 },
@@ -208,6 +254,7 @@
       "citationRef": "REF: CEA-POWER-2026",
       "category": "Energy & Climate",
       "chartType": "line",
+      "direction": "lower-is-better",
       "color": "#10b981",
       "timeline": [
         { "fy": "FY21", "val": 0.42 },
