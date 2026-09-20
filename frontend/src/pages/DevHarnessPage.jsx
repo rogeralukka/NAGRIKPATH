@@ -1,131 +1,94 @@
 import React, { useState } from "react";
-import Phase1Harness from "../Phase1Harness";
+import TopNav from "../components/layout/TopNav";
 import { ErrorBoundary } from "../components/shared/ErrorBoundary";
 import { JanManchSkeleton, SchemeGridSkeleton } from "../components/shared/skeletons";
-import { AlertCircle, RotateCcw, Bug, Sparkles } from "lucide-react";
+import { ShieldAlert, Layers, LayoutGrid } from "lucide-react";
 
 function CrashComponent({ shouldCrash }) {
   if (shouldCrash) {
     throw new Error("Simulated rendering crash in Financial Analytics Widget.");
   }
   return (
-    <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium text-sm">
-      ✓ Component is operating normally without errors.
+    <div className="p-6 rounded-2xl bg-neutral-50 dark:bg-[#16191F] border border-neutral-200 dark:border-white/[0.08] text-neutral-700 dark:text-[#EDEDED] font-medium text-sm">
+      Component is operating normally without errors.
     </div>
   );
 }
 
 /**
  * DevHarnessPage (/dev/harness):
- * Dev-only route rendering Phase1Harness and resilience testing harness.
+ * Clean sandbox route for verifying error boundaries and skeletons inside the standard app shell.
  */
 export default function DevHarnessPage() {
-  const [activeTab, setActiveTab] = useState("engine");
   const [shouldCrash, setShouldCrash] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#08090A] text-white">
-      {/* Dev Harness Navigation Bar */}
-      <div className="border-b border-white/[0.08] bg-[#0F1115] px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-bold tracking-wider uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-            Dev Harness
-          </span>
-          <span className="text-sm font-semibold text-neutral-300">NagrikPath Sandbox</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setActiveTab("engine")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              activeTab === "engine"
-                ? "bg-white/[0.1] text-white border border-white/[0.15]"
-                : "text-neutral-400 hover:text-white"
-            }`}
-          >
-            Phase 1 Engine
-          </button>
-          <button
-            onClick={() => setActiveTab("resilience")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              activeTab === "resilience"
-                ? "bg-white/[0.1] text-white border border-white/[0.15]"
-                : "text-neutral-400 hover:text-white"
-            }`}
-          >
-            Resilience & Skeletons
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen w-full flex flex-col bg-neutral-50 dark:bg-[#08090A] text-neutral-900 dark:text-white">
+      {/* Real Shared Top Navigation Bar */}
+      <TopNav />
 
-      {/* Tab Content */}
-      {activeTab === "engine" ? (
-        <Phase1Harness />
-      ) : (
-        <div className="max-w-6xl mx-auto p-8 space-y-12">
-          {/* Section 1: Error Boundary Sandbox */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Bug className="w-5 h-5 text-rose-400" />
-                  React Error Boundary Isolation Test
-                </h2>
-                <p className="text-xs text-neutral-400">
-                  Trigger an intentional rendering crash to verify the Obsidian fallback card (#0F1115 / #16191F) and recovery button.
-                </p>
-              </div>
-              <button
-                onClick={() => setShouldCrash((prev) => !prev)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  shouldCrash
-                    ? "bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30"
-                    : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30"
-                }`}
-              >
-                {shouldCrash ? "Reset Normal State" : "Simulate Widget Crash"}
-              </button>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#0F1115] border border-white/[0.08]">
-              <ErrorBoundary moduleName="Financial Analytics Widget">
-                <CrashComponent shouldCrash={shouldCrash} />
-              </ErrorBoundary>
-            </div>
-          </section>
-
-          {/* Section 2: Jan Manch Skeletons */}
-          <section className="space-y-4">
+      {/* Main Container */}
+      <main className="flex-1 max-w-6xl mx-auto w-full p-6 sm:p-8 space-y-10">
+        {/* Section 1: Error Boundary Sandbox */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-emerald-400" />
-                Jan Manch Skeleton Wireframe (h-72 min-h-[288px] Zero CLS)
+              <h2 className="text-base font-semibold text-neutral-900 dark:text-[#EDEDED] flex items-center gap-2">
+                <ShieldAlert className="w-4 h-4 text-neutral-500 dark:text-neutral-400 shrink-0" />
+                <span>Error Boundary Isolation</span>
               </h2>
-              <p className="text-xs text-neutral-400">
-                CSS-only pulse shimmer mimicking sector tabs and dual-axis financial/physical charts.
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                Simulate a subtree rendering exception to test the fallback container and component reload trigger.
               </p>
             </div>
-            <div className="p-6 rounded-2xl bg-[#0F1115] border border-white/[0.08]">
-              <JanManchSkeleton />
-            </div>
-          </section>
+            <button
+              onClick={() => setShouldCrash((prev) => !prev)}
+              type="button"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 dark:bg-[#16191F] dark:hover:bg-[#1D212A] text-neutral-800 dark:text-[#EDEDED] border border-neutral-300 dark:border-white/[0.08] transition-colors cursor-pointer"
+            >
+              {shouldCrash ? "Reset Normal State" : "Simulate Crash"}
+            </button>
+          </div>
 
-          {/* Section 3: Yojna Scheme Grid Skeletons */}
-          <section className="space-y-4">
-            <div>
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-emerald-400" />
-                Yojna Setu Scheme Grid Skeleton (3-Column Card Wireframe)
-              </h2>
-              <p className="text-xs text-neutral-400">
-                Mimics exact SchemeCard geometry with tags, title, benefit container, and CTA buttons.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-[#0F1115] border border-white/[0.08]">
-              <SchemeGridSkeleton count={3} />
-            </div>
-          </section>
-        </div>
-      )}
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#0F1115] border border-neutral-200 dark:border-white/[0.08] shadow-xs">
+            <ErrorBoundary moduleName="Financial Analytics Widget">
+              <CrashComponent shouldCrash={shouldCrash} />
+            </ErrorBoundary>
+          </div>
+        </section>
+
+        {/* Section 2: Jan Manch Skeletons */}
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-base font-semibold text-neutral-900 dark:text-[#EDEDED] flex items-center gap-2">
+              <Layers className="w-4 h-4 text-neutral-500 dark:text-neutral-400 shrink-0" />
+              <span>Jan Manch Analytics Skeletons</span>
+            </h2>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+              Dual-axis financial/physical charts wireframes matching exact container dimensions with zero CLS.
+            </p>
+          </div>
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#0F1115] border border-neutral-200 dark:border-white/[0.08] shadow-xs">
+            <JanManchSkeleton />
+          </div>
+        </section>
+
+        {/* Section 3: Yojna Scheme Grid Skeletons */}
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-base font-semibold text-neutral-900 dark:text-[#EDEDED] flex items-center gap-2">
+              <LayoutGrid className="w-4 h-4 text-neutral-500 dark:text-neutral-400 shrink-0" />
+              <span>Yojna Setu Scheme Grid Skeletons</span>
+            </h2>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+              3-column scheme recommendation card placeholders rendering during citizen evaluation transitions.
+            </p>
+          </div>
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#0F1115] border border-neutral-200 dark:border-white/[0.08] shadow-xs">
+            <SchemeGridSkeleton count={3} />
+          </div>
+        </section>
+      </main>
     </div>
   );
 }

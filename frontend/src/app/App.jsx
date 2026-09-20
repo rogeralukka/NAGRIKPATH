@@ -54,7 +54,7 @@ export default function App() {
           <LanguageProvider>
             <UIProvider>
               <GlobalEscHandler />
-              <ErrorBoundary moduleName="NagrikPath Application">
+              <ErrorBoundary moduleName="NagrikPath Application" fullPage={true}>
                 <AppRoutes />
               </ErrorBoundary>
             </UIProvider>

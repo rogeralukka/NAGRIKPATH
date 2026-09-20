@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
+import TopNav from "../layout/TopNav";
 
 /**
  * Resilient React Error Boundary.
  * Catches runtime and rendering errors in subtree children, preventing full app crashes.
+ * Supports both in-page widget isolation and full-page application shell fallback with real TopNav.
  * Adheres strictly to the Obsidian 3-tier dark and neutral light theme tokens.
  */
 export class ErrorBoundary extends Component {
@@ -38,11 +40,11 @@ export class ErrorBoundary extends Component {
           : this.props.fallback;
       }
 
-      const { compact = false, moduleName } = this.props;
+      const { compact = false, moduleName, fullPage = false } = this.props;
 
-      return (
+      const fallbackCard = (
         <div
-          className={`w-full bg-neutral-100 dark:bg-[#0F1115] border border-neutral-200 dark:border-white/[0.08] rounded-2xl text-neutral-800 dark:text-[#EDEDED] transition-colors flex flex-col items-center justify-center text-center shadow-xs ${
+          className={`w-full max-w-lg bg-neutral-100 dark:bg-[#0F1115] border border-neutral-200 dark:border-white/[0.08] rounded-2xl text-neutral-800 dark:text-[#EDEDED] transition-colors flex flex-col items-center justify-center text-center shadow-xs ${
             compact ? "p-4 sm:p-6 min-h-[160px]" : "p-8 sm:p-12 min-h-[220px]"
           }`}
           role="alert"
@@ -72,6 +74,23 @@ export class ErrorBoundary extends Component {
             <RotateCcw className="w-3.5 h-3.5 shrink-0" />
             <span>Reload Component</span>
           </button>
+        </div>
+      );
+
+      if (fullPage) {
+        return (
+          <div className="min-h-screen w-full flex flex-col bg-white dark:bg-[#08090A]">
+            <TopNav />
+            <div className="flex-1 flex items-center justify-center p-6">
+              {fallbackCard}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="w-full flex items-center justify-center">
+          {fallbackCard}
         </div>
       );
     }

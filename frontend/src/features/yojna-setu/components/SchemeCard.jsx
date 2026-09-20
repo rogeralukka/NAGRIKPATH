@@ -47,7 +47,7 @@ export function SchemeCard({
 
   if (scheme.state === 'ELIGIBLE-READY') {
     badgePill = (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap leading-none bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
         Ready to Apply
       </span>
     );
@@ -66,7 +66,7 @@ export function SchemeCard({
     const badgeText = expiredCount > 0 ? (expiredCount === 1 ? '1 Prerequisite Expired' : `${expiredCount} Prerequisites Expired`) : 'Missing Credential';
 
     badgePill = (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap leading-none bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shrink-0">
         {badgeText}
       </span>
     );
@@ -83,7 +83,7 @@ export function SchemeCard({
   } else {
     // INELIGIBLE
     badgePill = (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neutral-500/10 text-neutral-500 dark:text-[#8A8F98] border border-neutral-500/20">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap leading-none bg-neutral-500/10 text-neutral-500 dark:text-[#8A8F98] border border-neutral-500/20 shrink-0">
         Criteria Not Met
       </span>
     );
@@ -103,8 +103,8 @@ export function SchemeCard({
     >
       <div>
         {/* Top Badges, Checkbox & Bookmark Star */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
+        <div className="flex items-start justify-between gap-2 mb-3.5">
+          <div className="flex items-center gap-1.5 flex-wrap min-w-0">
             {isEligible && (
               <button
                 type="button"
@@ -112,7 +112,7 @@ export function SchemeCard({
                   e.stopPropagation();
                   onToggleSelect && onToggleSelect(scheme.id);
                 }}
-                className={`w-5 h-5 rounded flex items-center justify-center transition-all cursor-pointer border ${
+                className={`w-5 h-5 rounded flex items-center justify-center transition-all cursor-pointer border shrink-0 ${
                   isSelected
                     ? 'bg-blue-600 border-blue-600 text-white'
                     : 'bg-white dark:bg-[#16191F] border-neutral-300 dark:border-white/[0.15] text-transparent hover:border-blue-500'
@@ -123,35 +123,33 @@ export function SchemeCard({
                 <Check className="w-3.5 h-3.5 stroke-[3]" />
               </button>
             )}
-            <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold uppercase tracking-wider bg-neutral-100 dark:bg-[#16191F] text-neutral-600 dark:text-[#8A8F98] border border-neutral-200 dark:border-white/[0.08]">
+            <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold uppercase tracking-wider bg-neutral-100 dark:bg-[#16191F] text-neutral-600 dark:text-[#8A8F98] border border-neutral-200 dark:border-white/[0.08] shrink-0 leading-none inline-flex items-center">
               {scheme.level || 'CENTRAL'}
             </span>
-            <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40">
+            <span className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40 shrink-0 leading-none inline-flex items-center">
               {scheme.sector}
             </span>
+            {badgePill}
           </div>
 
-          <div className="flex items-center gap-2">
-            {badgePill}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleBookmark && onToggleBookmark(scheme.id);
-              }}
-              className="p-1 rounded-lg text-neutral-400 hover:text-amber-500 hover:bg-neutral-100 dark:hover:bg-[#16191F] transition-all cursor-pointer"
-              title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Scheme'}
-              aria-label={isBookmarked ? `Remove Bookmark for ${scheme.name}` : `Bookmark ${scheme.name}`}
-            >
-              <Star
-                className={`w-4 h-4 transition-colors ${
-                  isBookmarked
-                    ? 'fill-amber-400 text-amber-500'
-                    : 'text-neutral-400 dark:text-[#8A8F98]'
-                }`}
-              />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleBookmark && onToggleBookmark(scheme.id);
+            }}
+            className="p-1 rounded-lg text-neutral-400 hover:text-amber-500 hover:bg-neutral-100 dark:hover:bg-[#16191F] transition-all cursor-pointer shrink-0 mt-0.5"
+            title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Scheme'}
+            aria-label={isBookmarked ? `Remove Bookmark for ${scheme.name}` : `Bookmark ${scheme.name}`}
+          >
+            <Star
+              className={`w-4 h-4 transition-colors ${
+                isBookmarked
+                  ? 'fill-amber-400 text-amber-500'
+                  : 'text-neutral-400 dark:text-[#8A8F98]'
+              }`}
+            />
+          </button>
         </div>
 
         {/* Scheme Title & Department */}

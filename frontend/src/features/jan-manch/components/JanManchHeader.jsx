@@ -19,10 +19,9 @@ export default function JanManchHeader() {
       </div>
 
       <div>
-        {/* Scope Pill */}
-        <div className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#16191F] border border-slate-200 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-[#EDEDED]">
-          SCOPE: <span className="font-bold text-blue-600 dark:text-blue-400">TELANGANA STATE</span> // <span className="text-slate-500 dark:text-[#8A8F98]">CENTRAL ALLOCATION</span>
-        </div>
+        <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+          Telangana // Central Allocation
+        </span>
       </div>
     </div>
   );
