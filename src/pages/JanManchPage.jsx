@@ -11,16 +11,18 @@ import VarianceAnalysisCard from "../features/jan-manch/components/VarianceAnaly
 import ErrorBoundary from "../components/shared/ErrorBoundary";
 import { JanManchSkeleton } from "../components/shared/skeletons";
 
+import telanganaSectorsData from "../data/seed/janmanch/telangana_sectors.json";
 import agricultureData from "../data/seed/janmanch/agriculture.json";
 import jaljeevanData from "../data/seed/janmanch/jaljeevan.json";
 import healthData from "../data/seed/janmanch/health.json";
 import infrastructureData from "../data/seed/janmanch/infrastructure.json";
 
 const SECTOR_DATA_MAP = {
-  agriculture: agricultureData,
-  jaljeevan: jaljeevanData,
-  health: healthData,
-  infrastructure: infrastructureData
+  ...telanganaSectorsData,
+  agriculture: telanganaSectorsData?.agriculture || agricultureData,
+  jaljeevan: telanganaSectorsData?.jaljeevan || jaljeevanData,
+  health: telanganaSectorsData?.health || healthData,
+  infrastructure: telanganaSectorsData?.infrastructure || infrastructureData
 };
 
 /**

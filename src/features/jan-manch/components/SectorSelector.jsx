@@ -1,16 +1,29 @@
 import React from "react";
-import { Sprout, Droplets, HeartPulse, Building2 } from "lucide-react";
+import {
+  Sprout,
+  Droplets,
+  HeartPulse,
+  Building2,
+  Zap,
+  Home,
+  Briefcase,
+  GraduationCap
+} from "lucide-react";
 
 const SECTORS = [
   { id: "agriculture", label: "Agriculture", icon: Sprout },
   { id: "jaljeevan", label: "Jal Jeevan", icon: Droplets },
   { id: "health", label: "Health", icon: HeartPulse },
-  { id: "infrastructure", label: "Infrastructure", icon: Building2 }
+  { id: "infrastructure", label: "Infrastructure", icon: Building2 },
+  { id: "clean-energy", label: "Clean Energy", icon: Zap },
+  { id: "housing", label: "Housing", icon: Home },
+  { id: "livelihoods", label: "Livelihoods", icon: Briefcase },
+  { id: "education", label: "Education", icon: GraduationCap }
 ];
 
 /**
  * SectorSelector:
- * Exactly 4 sector tabs with high-contrast Obsidian dark styling and smooth state switching.
+ * 8-sector horizontal selector with high-contrast Obsidian dark styling and smooth state switching.
  */
 export default function SectorSelector({ activeSector, onSelectSector }) {
   return (
@@ -26,7 +39,7 @@ export default function SectorSelector({ activeSector, onSelectSector }) {
             key={sector.id}
             type="button"
             onClick={() => onSelectSector(sector.id)}
-            className={`px-4 py-2.5 text-xs font-bold rounded-t-xl transition-all duration-150 border-b-2 whitespace-nowrap flex items-center space-x-2 cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-bold rounded-t-xl transition-all duration-150 border-b-2 whitespace-nowrap flex items-center space-x-1.5 cursor-pointer ${
               isActive
                 ? "border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 bg-white dark:bg-[#0F1115] shadow-xs"
                 : "border-transparent text-slate-500 dark:text-[#8A8F98] hover:text-slate-900 dark:hover:text-[#EDEDED] hover:bg-slate-100/70 dark:hover:bg-white/5"
