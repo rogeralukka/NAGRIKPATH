@@ -24,7 +24,7 @@ function CustomComposedTooltip({ active, payload, label, unit }) {
   return (
     <div className="bg-[#0F1115] border border-white/10 p-3 rounded-xl shadow-xl font-mono text-xs text-[#EDEDED] space-y-2 min-w-[190px]">
       <div className="font-bold border-b border-white/10 pb-1 text-slate-300">
-        {label} Financial Telemetry
+        {label} Financial Breakdown
       </div>
       <div className="space-y-1">
         <div className="flex items-center justify-between text-blue-400">
