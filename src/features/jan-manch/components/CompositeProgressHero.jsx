@@ -57,7 +57,7 @@ export default function CompositeProgressHero() {
             <span className="text-3xl font-extrabold text-slate-900 dark:text-[#EDEDED] tracking-tight">
               168.4 <span className="text-sm font-normal text-slate-500 dark:text-[#8A8F98]">pts</span>
             </span>
-            <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-md border text-emerald-300 font-bold bg-emerald-500/20 border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.35)]">
+            <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-md border text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/20 border-emerald-200 dark:border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
               <ArrowUpRight size={13} className="stroke-[2.5]" />
               <span>+68.4% Net Sovereign Uplift since FY21</span>
             </span>

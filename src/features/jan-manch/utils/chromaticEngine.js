@@ -1,67 +1,48 @@
 /**
  * Adaptive Chromatic Shading Engine:
- * Dynamically computes chromatic styling, glow borders, and stroke/gradient
- * colors based on metric delta magnitude, direction of improvement, and stagnation.
+ * Strict binary semantic color system with high-contrast financial terminal styling.
+ * 
+ * 1. Adverse / Depreciation / Worsening:
+ *    - ALWAYS ROSE/RED (#f43f5e).
+ *    - Light Mode: bg-rose-50 text-rose-700 border border-rose-200
+ *    - Dark Mode: dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20
+ *    - Chart Stroke: #f43f5e (Rose-500)
+ *    - Chart Gradient: from-rose-500/15 to-transparent
+ * 
+ * 2. Growth / Improvement / Favorable:
+ *    - ALWAYS EMERALD GREEN (#10b981).
+ *    - Light Mode: bg-emerald-50 text-emerald-700 border border-emerald-200
+ *    - Dark Mode: dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20
+ *    - Chart Stroke: #10b981 (Emerald-500)
+ *    - Chart Gradient: from-emerald-500/15 to-transparent
  */
 export function getAdaptiveChromaticTheme(delta, isStagnant = false, direction = "higher-is-better") {
-  // Stagnation logic (Purple spectrum)
-  if (isStagnant || (Math.abs(delta) < 1.0 && delta !== 0)) {
-    return {
-      text: "text-purple-400 font-medium",
-      bg: "bg-purple-500/15",
-      border: "border-purple-500/30",
-      stroke: "#a855f7",
-      fillGradient: "from-purple-500/20 to-transparent",
-      badge: "Stagnant / Static"
-    };
-  }
-
+  // Binary semantic evaluation:
+  // In "lower-is-better" (e.g. CPI inflation easing, power deficit reduction):
+  //   delta < 0 is favorable (easing/reduction), delta > 0 is adverse.
+  // In "higher-is-better" (or currency depreciation where delta < 0):
+  //   delta < 0 is adverse, delta >= 0 is favorable.
   const isAdverse = direction === "lower-is-better" ? delta > 0 : delta < 0;
-  const absVal = Math.abs(delta);
 
   if (isAdverse) {
-    // Deteriorating / Depreciation (Red spectrum)
-    if (absVal >= 15) {
-      // Severe depreciation (Electric Crimson)
-      return {
-        text: "text-rose-400 font-bold",
-        bg: "bg-rose-500/20",
-        border: "border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.35)]",
-        stroke: "#f43f5e",
-        fillGradient: "from-rose-500/25 to-transparent",
-        badge: "Critical Depreciation"
-      };
-    }
-    // Moderate deterioration (Dark Burgundy)
     return {
-      text: "text-red-300 font-medium",
-      bg: "bg-red-950/50",
-      border: "border-red-800/40",
-      stroke: "#991b1b",
-      fillGradient: "from-red-950/30 to-transparent",
-      badge: "Moderate Decline"
-    };
-  } else {
-    // Improving / Growth (Green spectrum)
-    if (absVal >= 25) {
-      // Surge growth (Neon Emerald)
-      return {
-        text: "text-emerald-300 font-bold",
-        bg: "bg-emerald-500/20",
-        border: "border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.35)]",
-        stroke: "#10b981",
-        fillGradient: "from-emerald-500/25 to-transparent",
-        badge: "Surge Growth"
-      };
-    }
-    // Steady growth (Dark Forest Green)
-    return {
-      text: "text-emerald-400 font-medium",
-      bg: "bg-emerald-950/50",
-      border: "border-emerald-800/40",
-      stroke: "#059669",
-      fillGradient: "from-emerald-950/30 to-transparent",
-      badge: "Steady Growth"
+      text: "text-rose-700 dark:text-rose-400 font-bold",
+      bg: "bg-rose-50 dark:bg-rose-500/10",
+      border: "border-rose-200 dark:border-rose-500/20",
+      stroke: "#f43f5e",
+      fillGradient: "from-rose-500/15 to-transparent",
+      badge: "Adverse / Depreciation",
+      isAdverse: true
     };
   }
+
+  return {
+    text: "text-emerald-700 dark:text-emerald-400 font-bold",
+    bg: "bg-emerald-50 dark:bg-emerald-500/10",
+    border: "border-emerald-200 dark:border-emerald-500/20",
+    stroke: "#10b981",
+    fillGradient: "from-emerald-500/15 to-transparent",
+    badge: "Growth / Favorable",
+    isAdverse: false
+  };
 }

@@ -45,7 +45,7 @@ export default function NationalPulseView() {
   const gstTheme = getAdaptiveChromaticTheme(124.1, false, "higher-is-better");
   const upiTheme = getAdaptiveChromaticTheme(787.0, false, "higher-is-better");
   const forexTheme = getAdaptiveChromaticTheme(22.3, false, "higher-is-better");
-  const inrTheme = getAdaptiveChromaticTheme(-22.7, false, "lower-is-better"); // Electric Crimson
+  const inrTheme = getAdaptiveChromaticTheme(-22.7, false, "higher-is-better"); // Adverse -> Rose/Red
 
   const macroVitals = [
     {

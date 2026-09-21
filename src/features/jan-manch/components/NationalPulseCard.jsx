@@ -16,26 +16,6 @@ import { fetchLiveCurrencyRate } from "../api/currencyService";
 import { getAdaptiveChromaticTheme } from "../utils/chromaticEngine";
 
 /**
- * Category styling map for clean badges
- */
-const CATEGORY_STYLES = {
-  Macroeconomics:
-    "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200 dark:border-blue-800",
-  "Fiscal & Revenue":
-    "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-  "Digital Public Infra":
-    "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800",
-  "Energy & Climate":
-    "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-  "Social Welfare":
-    "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800",
-  Healthcare:
-    "bg-pink-50 text-pink-700 dark:bg-pink-950/60 dark:text-pink-300 border-pink-200 dark:border-pink-800",
-  "Public Infrastructure":
-    "bg-orange-50 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300 border-orange-200 dark:border-orange-800"
-};
-
-/**
  * Clean Minimalist Obsidian Tooltip (No "Verified" badge, No colored bullet)
  */
 const CustomTooltip = ({ active, payload, label, unit, isCurrency }) => {
@@ -69,17 +49,21 @@ const CustomTooltip = ({ active, payload, label, unit, isCurrency }) => {
 
 /**
  * NationalPulseCard:
- * Hybrid Architecture Card with live zero-auth currency telemetry,
- * coordinate inversion for physically downward-sloping Rupee purchasing power,
- * adaptive chromatic shading engine, percentage-point (pp) math, and dotless Recharts.
+ * High-contrast financial terminal card:
+ * - Minimalist header: Title + Source on left, Time Scrubber on right
+ * - Zero category bloat, zero developer ref strings, zero live spot pills
+ * - Strict binary semantic chromatic system (Rose/Red for adverse, Emerald for favorable)
+ * - Coordinate inversion for physically downward-sloping Rupee purchasing power
+ * - Percentage-point (pp) economics math for rates, relative % for volumes
+ * - Strictly locked chart height h-48 min-h-[192px] with dot={false}
  */
 export default function NationalPulseCard({ indicator }) {
   const isCurrency = indicator.id === "inr-usd-rate";
-  // Initial scrubber state: Default to "ALL" across ALL 12 cards
+  // Initial scrubber state: Default to "ALL" across all cards
   const [timeRange, setTimeRange] = useState("ALL");
   const [liveCurrency, setLiveCurrency] = useState(null);
 
-  // Live Currency Telemetry Fetcher (Deliverable 1)
+  // Live Currency Telemetry Fetcher
   useEffect(() => {
     if (isCurrency) {
       fetchLiveCurrencyRate().then((res) => {
@@ -100,24 +84,23 @@ export default function NationalPulseCard({ indicator }) {
   let subtextNote = "";
   let deltaText = "";
   let deltaNumeric = 0;
-  let isStagnant = false;
 
   if (isCurrency) {
     const currentRate = liveCurrency?.rate || 95.94;
     latestDisplayVal = `₹${currentRate.toFixed(2)}`;
-    const inverseRate = liveCurrency?.inverse || Number((1 / currentRate).toFixed(4));
-    subtextNote = `Rupee Purchasing Power (1 INR = $${inverseRate} USD)`;
+    const inverseRate = (1 / currentRate).toFixed(4);
+    subtextNote = `1 INR = $${inverseRate} USD`;
 
     let rawData = [];
     if (timeRange === "1W") {
       rawData = indicator.weeklyTimeline || [];
       xDataKey = "date";
-      deltaText = "↘ -0.17% (7D Deprec)";
+      deltaText = "↘ -0.17%";
       deltaNumeric = -0.17;
     } else if (timeRange === "1M") {
       rawData = indicator.monthlyTimeline || [];
       xDataKey = "date";
-      deltaText = "↘ -0.95% (30D Deprec)";
+      deltaText = "↘ -0.95%";
       deltaNumeric = -0.95;
     } else if (timeRange === "1Y") {
       rawData = [
@@ -129,29 +112,29 @@ export default function NationalPulseCard({ indicator }) {
         { fy: "Sep 26", val: currentRate, inrVal: currentRate }
       ];
       xDataKey = "fy";
-      deltaText = "↘ -9.5% (1Y Deprec)";
+      deltaText = "↘ -9.5%";
       deltaNumeric = -9.5;
     } else if (timeRange === "3Y") {
       const full = indicator.annualTimeline || indicator.timeline || [];
       rawData = full.slice(-3);
       xDataKey = "fy";
-      deltaText = "↘ -13.2% (3Y Deprec)";
+      deltaText = "↘ -13.2%";
       deltaNumeric = -13.2;
     } else if (timeRange === "5Y") {
       const full = indicator.annualTimeline || indicator.timeline || [];
       rawData = full.slice(-5);
       xDataKey = "fy";
-      deltaText = "↘ -18.9% (5Y Deprec)";
+      deltaText = "↘ -18.9%";
       deltaNumeric = -18.9;
     } else {
       // ALL
       rawData = indicator.annualTimeline || indicator.timeline || [];
       xDataKey = "fy";
-      deltaText = "↘ -22.7% (FY21–FY26)";
+      deltaText = "↘ -22.7%";
       deltaNumeric = -22.7;
     }
 
-    // Deliverable 2: Forced Downward Rupee Curve (Coordinate Inversion)
+    // Forced Downward Rupee Curve (Coordinate Inversion)
     // plotVal = (1 / spotRate) * 100
     // FY21 (74.2) -> 1.3477, FY26 (95.94) -> 1.0423 (Physically slopes DOWNWARD from left to right)
     chartData = rawData.map((pt) => {
@@ -164,7 +147,7 @@ export default function NationalPulseCard({ indicator }) {
       };
     });
   } else {
-    // Other 11 metrics
+    // Other 11 indicators
     const full = indicator.timeline || [];
     if (timeRange === "3Y") {
       chartData = full.slice(-3);
@@ -179,7 +162,7 @@ export default function NationalPulseCard({ indicator }) {
     const last = chartData[chartData.length - 1]?.val || 1;
     latestDisplayVal = typeof last === "number" ? last.toLocaleString("en-IN") : last;
 
-    // Deliverable 4: Percentage-Point (pp) Economics Logic
+    // Percentage-Point (pp) Economics Logic for rates
     if (indicator.id === "cpi-inflation") {
       const deltaPp = Number((last - first).toFixed(1));
       deltaNumeric = deltaPp; // -1.6 pp (lower is better)
@@ -213,11 +196,11 @@ export default function NationalPulseCard({ indicator }) {
     }
   }
 
-  // Deliverable 3: Adaptive Chromatic Shading Engine
-  const chromaticDirection = isCurrency ? "higher-is-better" : indicator.direction;
-  const chromatic = isCurrency && timeRange === "ALL"
-    ? getAdaptiveChromaticTheme(-22.7, false, "higher-is-better") // Explicit Electric Crimson for -22.7%
-    : getAdaptiveChromaticTheme(deltaNumeric, isStagnant, chromaticDirection);
+  // Strict binary chromatic styling:
+  // Currency depreciation is ALWAYS adverse (Rose/Red) on all timeframes.
+  const chromatic = isCurrency
+    ? getAdaptiveChromaticTheme(-1, false, "higher-is-better")
+    : getAdaptiveChromaticTheme(deltaNumeric, false, indicator.direction);
 
   // Dynamic Y-Axis Domain calculation
   let domainProp;
@@ -243,44 +226,34 @@ export default function NationalPulseCard({ indicator }) {
     yAxisTickFormatter = (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val);
   }
 
-  const categoryStyle =
-    CATEGORY_STYLES[indicator.category] ||
-    "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700";
   const gradientId = `card-grad-${indicator.id}`;
   const strokeColor = isCurrency ? "#f43f5e" : chromatic.stroke;
 
+  // Clean source citation
+  const sourceText = indicator.source?.startsWith("Source:")
+    ? indicator.source
+    : `Source: ${indicator.source}`;
+
+  // Clean title
+  const cardTitle = isCurrency ? "INR Purchasing Power" : indicator.title;
+
   return (
     <div className="bg-white dark:bg-[#0F1115] p-5 rounded-2xl border border-slate-200 dark:border-white/[0.08] shadow-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/20 transition-all">
-      {/* Top Header Row */}
+      {/* Deliverable 1: Minimalist Header Layout (Title + Source on left, Scrubber on right) */}
       <div>
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <div className="flex items-center gap-2">
-            <span
-              className={`text-[10px] font-bold font-mono uppercase tracking-wider px-2 py-0.5 rounded-md border ${categoryStyle}`}
-            >
-              {indicator.category}
-            </span>
-
-            {/* Deliverable 1: Live Currency Status Indicator */}
-            {isCurrency && (
-              <div className="flex items-center gap-1.5">
-                {liveCurrency?.isLive ? (
-                  <span className="inline-flex items-center gap-1 text-[9px] font-mono text-emerald-500 font-bold">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    LIVE SPOT
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 text-[9px] font-mono text-neutral-400 dark:text-neutral-500 font-medium">
-                    <span className="h-1.5 w-1.5 rounded-full bg-neutral-400"></span>
-                    CACHED BASELINE
-                  </span>
-                )}
-              </div>
-            )}
+        <div className="flex items-start justify-between gap-3 mb-2">
+          {/* Left side: Metric Title & Source citation */}
+          <div className="min-w-0 flex-1">
+            <h3 className="text-sm font-semibold text-neutral-900 dark:text-white tracking-tight leading-snug truncate">
+              {cardTitle}
+            </h3>
+            <p className="text-[11px] text-neutral-400 dark:text-neutral-500 font-normal mt-0.5 truncate">
+              {sourceText}
+            </p>
           </div>
 
-          {/* Independent Time Range Scrubber */}
-          <div className="flex items-center gap-1 bg-neutral-100 dark:bg-white/[0.04] p-0.5 rounded-lg border border-neutral-200/60 dark:border-white/[0.06]">
+          {/* Right side: Time Scrubber pills */}
+          <div className="flex items-center gap-1 bg-neutral-100 dark:bg-white/[0.04] p-0.5 rounded-lg border border-neutral-200/60 dark:border-white/[0.06] shrink-0">
             {scrubberOptions.map((opt) => {
               const isActive = timeRange === opt;
               return (
@@ -301,20 +274,7 @@ export default function NationalPulseCard({ indicator }) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-[#EDEDED] leading-tight">
-            {indicator.title}
-          </h3>
-          <span className="text-[10px] font-mono text-slate-400 dark:text-[#8A8F98]/70">
-            {indicator.citationRef}
-          </span>
-        </div>
-
-        <p className="text-[11px] text-slate-500 dark:text-[#8A8F98] mt-0.5 truncate">
-          {indicator.source}
-        </p>
-
-        {/* Current Figure + Trend Delta Badge with Adaptive Chromatic Theme */}
+        {/* Current Value + Trend Delta Badge */}
         <div className="flex items-baseline justify-between mt-3 mb-1 font-mono">
           <div className="text-2xl font-extrabold text-slate-900 dark:text-[#EDEDED] tracking-tight">
             {latestDisplayVal}
@@ -324,21 +284,21 @@ export default function NationalPulseCard({ indicator }) {
           </div>
 
           <div
-            className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-xs border ${chromatic.text} ${chromatic.bg} ${chromatic.border}`}
+            className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs border font-mono ${chromatic.text} ${chromatic.bg} ${chromatic.border}`}
           >
             <span>{deltaText}</span>
           </div>
         </div>
 
-        {/* Subtext contextual note (e.g. Rupee Purchasing Power or RBI target band) */}
+        {/* Subtitle / Contextual Note (e.g. 1 INR = $0.0104 USD or RBI target band) */}
         {subtextNote && (
-          <p className="text-[10px] font-mono text-slate-400 dark:text-[#8A8F98]/80 mb-2">
+          <p className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 mb-1">
             {subtextNote}
           </p>
         )}
       </div>
 
-      {/* Visualizer Container strictly locked to h-48 min-h-[192px] with NO dots */}
+      {/* Deliverable 4: Visualizer Container strictly locked to h-48 min-h-[192px] with dot={false} */}
       <div className="h-48 min-h-[192px] w-full min-w-0 mt-2 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
         <ResponsiveContainer width="100%" height="100%">
           {indicator.chartType === "composed" ? (
@@ -440,8 +400,8 @@ export default function NationalPulseCard({ indicator }) {
             >
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={strokeColor} stopOpacity={0.35} />
-                  <stop offset="95%" stopColor={strokeColor} stopOpacity={0.02} />
+                  <stop offset="5%" stopColor={strokeColor} stopOpacity={0.25} />
+                  <stop offset="95%" stopColor={strokeColor} stopOpacity={0.0} />
                 </linearGradient>
               </defs>
               <CartesianGrid
