@@ -10,13 +10,13 @@ import {
 import NationalPulseCard from "./NationalPulseCard";
 import CompositeProgressHero from "./CompositeProgressHero";
 import { useNationalPulse } from "../hooks/useNationalPulse";
-import { getAdaptiveChromaticTheme } from "../utils/chromaticEngine";
+import { getMetricColorTheme } from "../utils/chromaticEngine";
 import { fetchLiveCurrencyRate } from "../api/currencyService";
 
 /**
  * NationalPulseView:
  * Authoritative Citizen Macroeconomic & Digital Public Infrastructure Pulse Hub:
- * - 4 High-impact macro vital tiles styled with Adaptive Chromatic Shading
+ * - 4 High-impact macro vital tiles styled with Dynamic Chromatic Shading Engine
  * - "Desh Ka Index" Composite Sovereign Progress Hero visualizer
  * - 12-Card Responsive Recharts Grid with independent local scrubbers
  * - 100% Offline Client-Side Verification Fallback & Zero-Auth Live Telemetry
@@ -41,11 +41,11 @@ export default function NationalPulseView() {
   const currentInrRate = liveCurrency?.rate || 95.94;
   const currentInrInverse = liveCurrency?.inverse || (1 / currentInrRate).toFixed(4);
 
-  // Chromatic theme computation for top vitals
-  const gstTheme = getAdaptiveChromaticTheme(124.1, false, "higher-is-better");
-  const upiTheme = getAdaptiveChromaticTheme(787.0, false, "higher-is-better");
-  const forexTheme = getAdaptiveChromaticTheme(22.3, false, "higher-is-better");
-  const inrTheme = getAdaptiveChromaticTheme(-22.7, false, "higher-is-better"); // Adverse -> Rose/Red
+  // Dynamic 3-color tier Chromatic Shading theme computation for top vitals
+  const gstTheme = getMetricColorTheme(124.1, false, false); // Neon Electric Mint #00f59b
+  const upiTheme = getMetricColorTheme(787.0, false, false); // Neon Electric Mint #00f59b
+  const forexTheme = getMetricColorTheme(22.3, false, false); // Deep Forest Green #047857
+  const inrTheme = getMetricColorTheme(-22.7, true, false); // Electric Neon Rose #ff1744
 
   const macroVitals = [
     {
@@ -110,7 +110,7 @@ export default function NationalPulseView() {
             <div
               key={vital.id}
               className={`bg-white dark:bg-[#0F1115] p-4 rounded-xl border shadow-sm flex flex-col justify-between font-mono transition-all ${
-                vital.id === "inr" ? theme.border : "border-slate-200 dark:border-white/[0.08]"
+                vital.id === "inr" ? theme.badgeBorder : "border-slate-200 dark:border-white/[0.08]"
               }`}
             >
               <div className="flex items-center justify-between">
@@ -118,7 +118,7 @@ export default function NationalPulseView() {
                   {vital.title}
                 </span>
                 <span
-                  className={`p-1 rounded-md border text-xs ${theme.bg} ${theme.border} ${theme.text}`}
+                  className={`p-1 rounded-md border text-xs ${theme.badgeBg} ${theme.badgeBorder} ${theme.badgeText}`}
                 >
                   <Icon size={13} />
                 </span>
@@ -137,7 +137,7 @@ export default function NationalPulseView() {
                   </div>
                 )}
                 <div
-                  className={`inline-flex items-center space-x-1 mt-0.5 text-[11px] font-bold px-1.5 py-0.5 rounded-md border ${theme.bg} ${theme.border} ${theme.text}`}
+                  className={`inline-flex items-center space-x-1 mt-0.5 text-[11px] font-bold px-1.5 py-0.5 rounded-md border ${theme.badgeBg} ${theme.badgeBorder} ${theme.badgeText}`}
                 >
                   {vital.isPositive ? (
                     <ArrowUpRight size={12} className="stroke-[2.5]" />

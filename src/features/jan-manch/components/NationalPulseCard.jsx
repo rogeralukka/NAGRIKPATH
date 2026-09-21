@@ -13,7 +13,7 @@ import {
   CartesianGrid
 } from "recharts";
 import { fetchLiveCurrencyRate } from "../api/currencyService";
-import { getAdaptiveChromaticTheme } from "../utils/chromaticEngine";
+import { getMetricColorTheme } from "../utils/chromaticEngine";
 
 /**
  * Clean Minimalist Obsidian Tooltip (No "Verified" badge, No colored bullet)
@@ -52,9 +52,12 @@ const CustomTooltip = ({ active, payload, label, unit, isCurrency }) => {
  * High-contrast financial terminal card:
  * - Minimalist header: Title + Source on left, Time Scrubber on right
  * - Zero category bloat, zero developer ref strings, zero live spot pills
- * - Strict binary semantic chromatic system (Rose/Red for adverse, Emerald for favorable)
- * - Coordinate inversion for physically downward-sloping Rupee purchasing power
- * - Percentage-point (pp) economics math for rates, relative % for volumes
+ * - Strict dynamic 3-color tier Chromatic Shading Engine:
+ *   • Surge (>80%): Neon Electric Mint #00f59b
+ *   • Strong (25-80%): Vibrant Emerald #10b981
+ *   • Steady (1-25%): Deep Forest Green #047857
+ *   • Downward / Severe: Crimson / Neon Rose #ff1744 / #e11d48 / #991b1b
+ *   • Stagnant / Stabilization: Electric Purple #a855f7
  * - Strictly locked chart height h-48 min-h-[192px] with dot={false}
  */
 export default function NationalPulseCard({ indicator }) {
@@ -136,7 +139,6 @@ export default function NationalPulseCard({ indicator }) {
 
     // Forced Downward Rupee Curve (Coordinate Inversion)
     // plotVal = (1 / spotRate) * 100
-    // FY21 (74.2) -> 1.3477, FY26 (95.94) -> 1.0423 (Physically slopes DOWNWARD from left to right)
     chartData = rawData.map((pt) => {
       const rawSpot = pt.inrVal || (pt.val > 1 ? pt.val : Number((1 / pt.val).toFixed(2)));
       const plotVal = Number(((1 / rawSpot) * 100).toFixed(4));
@@ -189,18 +191,16 @@ export default function NationalPulseCard({ indicator }) {
         deltaText = deltaPp >= 0 ? `↑ +${deltaPp} pp Saturation Gain` : `↓ ${deltaPp} pp Coverage`;
       }
     } else {
-      // Standard Volume Metrics (GST, UPI, Forex, Cards, Highways, DigiLocker, DBT)
+      // Standard Volume Metrics (GST, UPI, Forex, Cards, Highways, DigiLocker, DBT, Renewables)
       const pct = Number((((last - first) / first) * 100).toFixed(1));
       deltaNumeric = pct;
       deltaText = `${pct >= 0 ? "↑ +" : "↓ "}${pct}% vs ${chartData[0]?.fy || "FY21"}`;
     }
   }
 
-  // Strict binary chromatic styling:
-  // Currency depreciation is ALWAYS adverse (Rose/Red) on all timeframes.
-  const chromatic = isCurrency
-    ? getAdaptiveChromaticTheme(-1, false, "higher-is-better")
-    : getAdaptiveChromaticTheme(deltaNumeric, false, indicator.direction);
+  // Calculate dynamic theme via strict 3-color mathematical tiers
+  const isDownward = isCurrency || indicator.direction === "lower-is-better" || deltaNumeric < 0;
+  const theme = getMetricColorTheme(deltaNumeric, isDownward, indicator.isStagnant);
 
   // Dynamic Y-Axis Domain calculation
   let domainProp;
@@ -225,9 +225,6 @@ export default function NationalPulseCard({ indicator }) {
     ];
     yAxisTickFormatter = (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val);
   }
-
-  const gradientId = `card-grad-${indicator.id}`;
-  const strokeColor = isCurrency ? "#f43f5e" : chromatic.stroke;
 
   // Clean source citation
   const sourceText = indicator.source?.startsWith("Source:")
@@ -283,11 +280,11 @@ export default function NationalPulseCard({ indicator }) {
             </span>
           </div>
 
-          <div
-            className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs border font-mono ${chromatic.text} ${chromatic.bg} ${chromatic.border}`}
+          <span
+            className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs border font-mono ${theme.badgeBg} ${theme.badgeText} ${theme.badgeBorder}`}
           >
-            <span>{deltaText}</span>
-          </div>
+            {deltaText}
+          </span>
         </div>
 
         {/* Subtitle / Contextual Note (e.g. 1 INR = $0.0104 USD or RBI target band) */}
@@ -298,7 +295,7 @@ export default function NationalPulseCard({ indicator }) {
         )}
       </div>
 
-      {/* Deliverable 4: Visualizer Container strictly locked to h-48 min-h-[192px] with dot={false} */}
+      {/* Deliverable 2: SVG Visualizer Container with Dynamic Gradient & Stroke */}
       <div className="h-48 min-h-[192px] w-full min-w-0 mt-2 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
         <ResponsiveContainer width="100%" height="100%">
           {indicator.chartType === "composed" ? (
@@ -306,6 +303,12 @@ export default function NationalPulseCard({ indicator }) {
               data={chartData}
               margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
             >
+              <defs>
+                <linearGradient id={`gradient-${indicator.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={theme.stroke} stopOpacity={0.25} />
+                  <stop offset="95%" stopColor={theme.stroke} stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="currentColor"
@@ -341,7 +344,7 @@ export default function NationalPulseCard({ indicator }) {
                 yAxisId="left"
                 dataKey="val"
                 name="Revenue"
-                fill={strokeColor}
+                fill={theme.stroke}
                 radius={[4, 4, 0, 0]}
                 maxBarSize={22}
               />
@@ -387,10 +390,10 @@ export default function NationalPulseCard({ indicator }) {
                 type="monotone"
                 dataKey="val"
                 name="Value"
-                stroke={strokeColor}
+                stroke={theme.stroke}
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4, fill: strokeColor, stroke: "#ffffff", strokeWidth: 2 }}
+                activeDot={{ r: 4, fill: theme.stroke, stroke: "#ffffff", strokeWidth: 2 }}
               />
             </LineChart>
           ) : (
@@ -399,9 +402,9 @@ export default function NationalPulseCard({ indicator }) {
               margin={{ top: 10, right: 10, left: isCurrency ? -5 : -15, bottom: 0 }}
             >
               <defs>
-                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={strokeColor} stopOpacity={0.25} />
-                  <stop offset="95%" stopColor={strokeColor} stopOpacity={0.0} />
+                <linearGradient id={`gradient-${indicator.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={theme.stroke} stopOpacity={0.25} />
+                  <stop offset="95%" stopColor={theme.stroke} stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid
@@ -430,12 +433,12 @@ export default function NationalPulseCard({ indicator }) {
                 type="monotone"
                 dataKey={isCurrency ? "plotVal" : "val"}
                 name="Value"
-                stroke={strokeColor}
+                stroke={theme.stroke}
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4, fill: strokeColor, stroke: "#ffffff", strokeWidth: 2 }}
+                activeDot={{ r: 4, fill: theme.stroke, stroke: "#ffffff", strokeWidth: 2 }}
                 fillOpacity={1}
-                fill={`url(#${gradientId})`}
+                fill={`url(#gradient-${indicator.id})`}
               />
             </AreaChart>
           )}
