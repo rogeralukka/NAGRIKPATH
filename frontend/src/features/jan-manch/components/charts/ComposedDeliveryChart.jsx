@@ -177,8 +177,8 @@ export default function ComposedDeliveryChart({
               name="Disbursement Rate"
               stroke="#f59e0b"
               strokeWidth={2.5}
-              dot={{ r: 3.5, fill: "#f59e0b", strokeWidth: 1.5, stroke: "#0F1115" }}
-              activeDot={{ r: 5.5, fill: "#f59e0b" }}
+              dot={false}
+              activeDot={{ r: 4, strokeWidth: 2, fill: "#f59e0b", stroke: "#ffffff" }}
             />
           </ComposedChart>
         </ResponsiveContainer>

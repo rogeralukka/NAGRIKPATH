@@ -147,6 +147,8 @@ export default function FederalAreaTrendChart({
               name="Target Units"
               stroke="#3b82f6"
               strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 4, strokeWidth: 2, fill: "#3b82f6", stroke: "#ffffff" }}
               fillOpacity={1}
               fill="url(#areaTargetGrad)"
             />
@@ -156,6 +158,8 @@ export default function FederalAreaTrendChart({
               name="Delivered / Verified"
               stroke="#10b981"
               strokeWidth={2.5}
+              dot={false}
+              activeDot={{ r: 4, strokeWidth: 2, fill: "#10b981", stroke: "#ffffff" }}
               fillOpacity={1}
               fill="url(#areaDeliveredGrad)"
             />
